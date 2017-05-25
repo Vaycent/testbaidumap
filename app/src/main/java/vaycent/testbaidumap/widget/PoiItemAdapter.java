@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,10 +71,9 @@ public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHo
             public void onClick(View v) {
                 LocationManager mStartLM = startLocation();
 
-                searchOnePoiResult(position);
-
                 planRouteInDoor(position,mStartLM);
 
+                searchOnePoiResult(position);
             }
         });
     }
@@ -90,7 +89,7 @@ public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHo
     {
 
         TextView nameTv,distanceTv,floorTv;
-        ImageView startIconIv;
+        Button startIconIv;
         ConstraintLayout itemLayout;
 
         public MyViewHolder(View view)
@@ -101,7 +100,7 @@ public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHo
             distanceTv = (TextView) view.findViewById(R.id.adapter_poiitem_tv_distance);
             floorTv = (TextView)view.findViewById(R.id.adapter_poiitem_tv_floor);
 //            adapter_poiitem_tv_floor
-            startIconIv = (ImageView) view.findViewById(R.id.adapter_poiitem_iv_startnavigation);
+            startIconIv = (Button) view.findViewById(R.id.adapter_poiitem_iv_startnavigation);
         }
     }
 

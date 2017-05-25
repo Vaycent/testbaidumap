@@ -144,12 +144,13 @@
 
             <RadioButton
                 android:id="@+id/activity_routemap_rbtn_contentfirst"
+                android:background="@drawable/btn_cir_selector"
+                android:button="@null"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
-                android:button="@null"
                 android:gravity="center"
                 android:paddingBottom="5px"
                 android:paddingTop="5px"
@@ -161,6 +162,7 @@
 
             <RadioButton
                 android:id="@+id/activity_routemap_rbtn_contentsecond"
+                android:background="@drawable/btn_cir_selector"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
@@ -175,6 +177,7 @@
 
             <RadioButton
                 android:id="@+id/activity_routemap_rbtn_contentthird"
+                android:background="@drawable/btn_cir_selector"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
@@ -189,6 +192,7 @@
 
             <RadioButton
                 android:id="@+id/activity_routemap_rbtn_contentfourth"
+                android:background="@drawable/btn_cir_selector"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
@@ -203,6 +207,7 @@
 
             <RadioButton
                 android:id="@+id/activity_routemap_rbtn_contentfifth"
+                android:background="@drawable/btn_cir_selector"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"

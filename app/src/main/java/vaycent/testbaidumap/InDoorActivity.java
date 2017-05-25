@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ import vaycent.testbaidumap.Poi.IndoorPoiOverlay;
 import vaycent.testbaidumap.widget.PoiItemAdapter;
 
 
+
 public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanResultListener,OnGetPoiSearchResultListener,
         BaiduMap.OnBaseIndoorMapListener{
 
@@ -88,6 +90,8 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     private LinearLayout pathMsgLayout;
     private TextView mTxPathMsg;
     private RadioGroup radiogroup;
+    private RadioButton radioButtonMeal;
+
     private String currentTab;
     private String lastTab;
     private RecyclerView poiListView;
@@ -278,15 +282,15 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             overlay.addToMap();
             overlay.zoomToSpan();
 
+
             if(null == poiInfosList)
                 poiInfosList= new ArrayList<PoiIndoorInfo>();
-            if(null == poiItemAdapter)
-                poiItemAdapter = new PoiItemAdapter(this,mMapView,poiInfosList,mRoutePlanSearch);
-
 
             poiListView.setLayoutManager(new LinearLayoutManager(this));
             poiInfosList.clear();
             poiInfosList.addAll(poiIndoorResult.getmArrayPoiInfo());//每个点的超详细信息
+
+            poiItemAdapter = new PoiItemAdapter(this,mMapView,poiInfosList,mRoutePlanSearch);
             poiListView.setAdapter(poiItemAdapter);
             poiItemAdapter.notifyDataSetChanged();
         }
@@ -358,7 +362,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
         poiListView = (RecyclerView) findViewById(R.id.activity_routemap_rv_commonflightlistview);
         radiogroup = (RadioGroup) findViewById(R.id.activity_routemap_rd_content_tab);
-
+        radioButtonMeal = (RadioButton) findViewById(R.id.activity_routemap_rbtn_contentfirst);
 
         mBtnStartSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -380,6 +384,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         btnInhourseStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                测试西单大悦城
                 IndoorPlanNode startNode = new IndoorPlanNode(new LatLng(39.917380 ,116.37978), "F2");//39.917380,
                 IndoorPlanNode endNode = new IndoorPlanNode(new LatLng(39.917239, 116.37955), "F6");
                 IndoorRoutePlanOption irpo = new IndoorRoutePlanOption().from(startNode).to(endNode);
@@ -391,6 +396,8 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             public void onClick(View v) {
                 showListAndShowFloor();
                 mEdtSearchTx.setText("");
+//                radiogroup.clearCheck();
+                radioButtonMeal.setChecked(true);
             }
         });
         btnPath.setOnClickListener(new View.OnClickListener() {
@@ -636,6 +643,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     public void showListAndShowFloor(){
         navigationListLayout.setVisibility(View.VISIBLE);
         stripListView.setVisibility(View.GONE);
+
     }
 
 }
