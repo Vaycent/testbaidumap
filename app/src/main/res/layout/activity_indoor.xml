@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:my="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="vaycent.testbaidumap.InDoorActivity">
+
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/activity_main_mv_map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="true"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="#cfffffff"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/activity_indoor_et_searchtext"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="50dp"
+                android:maxLines="1"
+                android:hint="支持在室内搜索"
+                android:padding="5dp"/>
+
+            <Button
+                android:id="@+id/activity_indoor_btn_startsearch"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:text="搜"/>
+        </LinearLayout>
+
+
+
+        <Button
+            android:id="@+id/activity_indoor_btn_inhoursestart"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_above="@+id/activity_indoor_btn_navigationmap"
+            android:layout_marginLeft="10dp"
+            android:background="#ffffff"
+            android:text="@string/SW0001"/>
+
+        <Button
+            android:id="@+id/activity_indoor_btn_navigationmap"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_above="@+id/activity_indoor_btn_currentposition"
+            android:layout_margin="10dp"
+            android:background="#ffffff"
+            android:text="导览"/>
+
+        <Button
+            android:id="@+id/activity_indoor_btn_currentposition"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_above="@+id/activity_indoor_llyt_pathmsglayout"
+            android:layout_marginLeft="10dp"
+            android:background="#ffffff"
+            android:text="定位"/>
+
+
+        <Button
+            android:id="@+id/activity_indoor_btn_path"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_above="@+id/activity_indoor_llyt_pathmsglayout"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:background="#ffffff"
+            android:text="路线"/>
+
+
+        <LinearLayout
+            android:id="@+id/activity_indoor_llyt_pathmsglayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignWithParentIfMissing="false"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="false"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:visibility="invisible">
+
+            <Button
+                android:id="@+id/activity_indoor_btn_prepath"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="2dip"
+                android:layout_marginRight="2dip"
+                android:background="@drawable/pre_"
+                android:onClick="nodeClick"/>
+
+            <TextView
+                android:id="@+id/activity_indoor_tv_pathmsg"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:gravity="center"/>
+
+            <Button
+                android:id="@+id/activity_indoor_btn_nextpath"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="2dip"
+                android:layout_marginRight="2dip"
+                android:background="@drawable/next_"
+                android:onClick="nodeClick"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/activity_indoor_llyt_navigationlistlayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:layout_marginTop="50dp"
+        android:padding="0.5dp"
+        android:visibility="gone">
+
+        <RadioGroup
+            android:id="@+id/activity_routemap_rd_content_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+
+
+            <RadioButton
+                android:id="@+id/activity_routemap_rbtn_contentfirst"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="5px"
+                android:paddingTop="5px"
+                android:text="餐饮"
+                android:textSize="15dp"/>
+
+            <!--android:checked="true"-->
+
+
+            <RadioButton
+                android:id="@+id/activity_routemap_rbtn_contentsecond"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="5px"
+                android:paddingTop="5px"
+                android:text="值机口"
+                android:textSize="15dp"/>
+
+            <RadioButton
+                android:id="@+id/activity_routemap_rbtn_contentthird"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="5px"
+                android:paddingTop="5px"
+                android:text="登机口"
+                android:textSize="15dp"/>
+
+            <RadioButton
+                android:id="@+id/activity_routemap_rbtn_contentfourth"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="5px"
+                android:paddingTop="5px"
+                android:text="到达口"
+                android:textSize="15dp"/>
+
+            <RadioButton
+                android:id="@+id/activity_routemap_rbtn_contentfifth"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="5px"
+                android:paddingTop="5px"
+                android:text="出发厅"
+                android:textSize="15dp"/>
+        </RadioGroup>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/activity_routemap_rv_commonflightlistview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="10dp"
+            android:background="#CCFFFFFF"
+            android:cacheColorHint="#00000000"
+            android:fadingEdge="none"
+            android:scrollbars="none"/>
+    </LinearLayout>
+
+
+</RelativeLayout>
+
