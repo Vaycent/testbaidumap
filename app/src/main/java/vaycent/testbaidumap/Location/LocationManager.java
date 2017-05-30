@@ -61,21 +61,13 @@ public class LocationManager implements BaiduMap.OnBaseIndoorMapListener {
 
 
     public void startLocationSearch(){
-        try{
+        if(null!=mLocationClient&&!mLocationClient.isStarted())
             mLocationClient.start();
-        }catch (Exception e){
-
-        }
     }
 
     public void stopLocationSearch(){
-        try{
-            if(null!=mLocationClient&&mLocationClient.isStarted()){
-                mLocationClient.stop();
-            }
-        }catch (Exception e){
-
-        }
+        if(null!=mLocationClient&&mLocationClient.isStarted())
+            mLocationClient.stop();
     }
 
 
@@ -95,7 +87,7 @@ public class LocationManager implements BaiduMap.OnBaseIndoorMapListener {
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//设置高精度定位定位模式
         option.setCoorType("bd09ll");//设置百度经纬度坐标系格式
-        option.setScanSpan(2000);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setScanSpan(2*1000);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
         option.setOpenGps(true);//可选，默认false,设置是否使用gps
         option.setNeedDeviceDirect(true); //返回的定位结果包含手机机头方向
         option.setIsNeedAddress(true);//反编译获得具体位置，只有网络定位才可以

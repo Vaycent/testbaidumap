@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:my="http://schemas.android.com/apk/res-auto"
@@ -8,215 +8,118 @@
     android:layout_height="match_parent"
     tools:context="vaycent.testbaidumap.NavigationMapActivity">
 
-    <android.support.design.widget.AppBarLayout
+
+
+    <LinearLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <RelativeLayout
-        android:id="@+id/viewStub"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.baidu.mapapi.map.MapView
-            android:id="@+id/activity_navigationmap_mv_map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </RelativeLayout>
-
-    <vaycent.testbaidumap.widget.MultiDirectionSlidingDrawer
-        android:id="@+id/activity_routemap_drawer"
-        android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="40dp"
-        my:content="@+id/content"
-        my:direction="bottomToTop"
-        my:handle="@+id/handle">
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:padding="0.5dp">
 
-        <RelativeLayout
-            android:id="@+id/handle"
+        <RadioGroup
+            android:id="@+id/activity_navigationmap_rd_content_tab"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:descendantFocusability="afterDescendants">
-
-            <LinearLayout
-                android:id="@+id/activity_routemap_llyt_findaround"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#ffffff"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="30px"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20px"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="发现周边"/>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="right"
-                    android:paddingBottom="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/a10"/>
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/activity_routemap_iv_image_arow"
-                android:layout_width="80dp"
-                android:layout_height="18dp"
-                android:layout_centerInParent="true"
-                android:src="@drawable/a10"
-                android:visibility="gone"/>
-        </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
 
 
-        <LinearLayout
-            android:id="@+id/content"
+            <RadioButton
+                android:id="@+id/activity_navigationmap_rbtn_contentfirst"
+                android:background="@drawable/btn_cir_selector"
+                android:button="@null"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingBottom="5px"
+                android:paddingTop="5px"
+                android:text="餐饮"
+                android:textSize="15dp"/>
+
+            <!--android:checked="true"-->
+
+
+            <RadioButton
+                android:id="@+id/activity_navigationmap_rbtn_contentsecond"
+                android:background="@drawable/btn_cir_selector"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="5px"
+                android:paddingTop="5px"
+                android:text="值机口"
+                android:textSize="15dp"/>
+
+            <RadioButton
+                android:id="@+id/activity_navigationmap_rbtn_contentthird"
+                android:background="@drawable/btn_cir_selector"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="5px"
+                android:paddingTop="5px"
+                android:text="登机口"
+                android:textSize="15dp"/>
+
+            <RadioButton
+                android:id="@+id/activity_navigationmap_rbtn_contentfourth"
+                android:background="@drawable/btn_cir_selector"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="5px"
+                android:paddingTop="5px"
+                android:text="到达口"
+                android:textSize="15dp"/>
+
+            <RadioButton
+                android:id="@+id/activity_navigationmap_rbtn_contentfifth"
+                android:background="@drawable/btn_cir_selector"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="5px"
+                android:paddingTop="5px"
+                android:text="出发厅"
+                android:textSize="15dp"/>
+        </RadioGroup>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/activity_navigationmap_rv_commonflightlistview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#ffffff"
-            android:orientation="vertical"
-            android:padding="0.5dp">
-
-            <RadioGroup
-                android:id="@+id/activity_routemap_rd_content_tab"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            android:layout_marginTop="10dp"
+            android:background="#CCFFFFFF"
+            android:cacheColorHint="#00000000"
+            android:fadingEdge="none"
+            android:scrollbars="none"/>
+    </LinearLayout>
 
 
-                <RadioButton
-                    android:id="@+id/activity_routemap_rbtn_contentfirst"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/a10"
-                    android:button="@null"
-                    android:checked="true"
-                    android:gravity="center"
-                    android:paddingBottom="5px"
-                    android:paddingTop="5px"
-                    android:text="310"
-                    android:textColor="#ffffff"
-                    android:textSize="20dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="测试一下而已"/>
 
-                <RadioButton
-                    android:id="@+id/activity_routemap_rbtn_contentsecond"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/a10"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:paddingBottom="5px"
-                    android:paddingTop="5px"
-                    android:text="311"
-                    android:textColor="#ffffff"
-                    android:textSize="20dp"/>
-
-                <RadioButton
-                    android:id="@+id/activity_routemap_rbtn_contentthird"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/a10"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:paddingBottom="5px"
-                    android:paddingTop="5px"
-                    android:text="312"
-                    android:textColor="#ffffff"
-                    android:textSize="20dp"/>
-
-                <RadioButton
-                    android:id="@+id/activity_routemap_rbtn_contentfourth"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/a10"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:paddingBottom="5px"
-                    android:paddingTop="5px"
-                    android:text="313"
-                    android:textColor="#ffffff"
-                    android:textSize="20dp"/>
-
-                <RadioButton
-                    android:id="@+id/activity_routemap_rbtn_contentfivth"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/a10"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:paddingBottom="5px"
-                    android:paddingTop="5px"
-                    android:text="314"
-                    android:textColor="#ffffff"
-                    android:textSize="20dp"/>
-
-                <RadioButton
-                    android:id="@+id/activity_routemap_rbtn_contentsixth"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/a10"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:paddingBottom="5px"
-                    android:paddingTop="5px"
-                    android:text="315"
-                    android:textColor="#ffffff"
-                    android:textSize="20dp"/>
-            </RadioGroup>
-
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/activity_routemap_rv_commonflightlistview"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginTop="10dp"
-                android:background="#CCFFFFFF"
-                android:cacheColorHint="#00000000"
-                android:fadingEdge="none"
-                android:scrollbars="none"/>
-        </LinearLayout>
-
-
-    </vaycent.testbaidumap.widget.MultiDirectionSlidingDrawer>
-
-
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
+import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
@@ -51,15 +52,22 @@ import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import vaycent.testbaidumap.EventBus.LocationMsgEvent;
 import vaycent.testbaidumap.InDoor.BaseStripAdapter;
 import vaycent.testbaidumap.InDoor.IndoorRouteOverlay;
 import vaycent.testbaidumap.InDoor.MyLocationListener;
 import vaycent.testbaidumap.InDoor.StripListView;
 import vaycent.testbaidumap.Location.LocationManager;
 import vaycent.testbaidumap.Poi.IndoorPoiOverlay;
+import vaycent.testbaidumap.Utils.MapUtils;
+import vaycent.testbaidumap.Utils.NoMultiClickListener;
 import vaycent.testbaidumap.widget.PoiItemAdapter;
 
 
@@ -99,6 +107,11 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     private List<PoiIndoorInfo> poiInfosList;
 
 
+    private int btnResourceCode=0;
+    private MapUtils mapUtilsHelper = new MapUtils();
+
+
+
 
     //用于定位
     public LocationClient mLocationClient;//定位SDK的核心类
@@ -121,6 +134,11 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
     }
     @Override
+    protected void onStart(){
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+    @Override
     protected void onResume() {
         super.onResume();
         mMapView.onResume();
@@ -133,6 +151,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     @Override
     protected void onStop(){
         super.onStop();
+        EventBus.getDefault().unregister(this);
         if(null!=mLocationClient&&mLocationClient.isStarted())
             mLocationClient.stop();
     }
@@ -206,18 +225,15 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     public void onBaseIndoorMapMode(boolean b, MapBaseIndoorMapInfo mapBaseIndoorMapInfo) {
         if (b) {
             stripListView.setVisibility(View.VISIBLE);
-
+            btnNavigationMap.setVisibility(View.VISIBLE);
             if (mapBaseIndoorMapInfo == null) {
                 return;
             }
             mFloorListAdapter.setmFloorList(mapBaseIndoorMapInfo.getFloors());
             stripListView.setStripAdapter(mFloorListAdapter);
-//            btnNavigationMap.setVisibility(View.VISIBLE);
-//            btnGetCurrentPosition.setVisibility(View.VISIBLE);
         } else {
             stripListView.setVisibility(View.GONE);
-//            btnNavigationMap.setVisibility(View.GONE);
-//            btnGetCurrentPosition.setVisibility(View.GONE);
+            btnNavigationMap.setVisibility(View.GONE);
         }
         mMapBaseIndoorMapInfo = mapBaseIndoorMapInfo;
     }
@@ -276,11 +292,11 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         }
 
         if (poiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR) {
-            IndoorPoiOverlay overlay = new MyIndoorPoiOverlay(mBaiduMap);
-            mBaiduMap.setOnMarkerClickListener(overlay);
-            overlay.setData(poiIndoorResult);
-            overlay.addToMap();
-            overlay.zoomToSpan();
+//            IndoorPoiOverlay overlay = new MyIndoorPoiOverlay(mBaiduMap);
+//            mBaiduMap.setOnMarkerClickListener(overlay);
+//            overlay.setData(poiIndoorResult);
+//            overlay.addToMap();
+//            overlay.zoomToSpan();
 
 
             if(null == poiInfosList)
@@ -364,9 +380,9 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         radiogroup = (RadioGroup) findViewById(R.id.activity_routemap_rd_content_tab);
         radioButtonMeal = (RadioButton) findViewById(R.id.activity_routemap_rbtn_contentfirst);
 
-        mBtnStartSearch.setOnClickListener(new View.OnClickListener() {
+        mBtnStartSearch.setOnClickListener(new NoMultiClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoMultiClick(View v) {
                if("".equals(mEdtSearchTx.getText().toString().trim())){
                    return;
                }
@@ -381,9 +397,9 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             }
         });
 
-        btnInhourseStart.setOnClickListener(new View.OnClickListener() {
+        btnInhourseStart.setOnClickListener(new NoMultiClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoMultiClick(View v) {
 //                测试西单大悦城
                 IndoorPlanNode startNode = new IndoorPlanNode(new LatLng(39.917380 ,116.37978), "F2");//39.917380,
                 IndoorPlanNode endNode = new IndoorPlanNode(new LatLng(39.917239, 116.37955), "F6");
@@ -391,36 +407,30 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
                 mRoutePlanSearch.walkingIndoorSearch(irpo);
             }
         });
-        btnNavigationMap.setOnClickListener(new View.OnClickListener() {
+
+        btnPath.setOnClickListener(new NoMultiClickListener() {
             @Override
-            public void onClick(View v) {
-                showListAndShowFloor();
-                mEdtSearchTx.setText("");
-//                radiogroup.clearCheck();
-                radioButtonMeal.setChecked(true);
-            }
-        });
-        btnPath.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            public void onNoMultiClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(InDoorActivity.this,IndoorSearchActivity.class);
                 startActivity(intent);
             }
         });
-
-        btnGetCurrentPosition.setOnClickListener(new View.OnClickListener() {
+        btnNavigationMap.setOnClickListener(new NoMultiClickListener() {
             @Override
-            public void onClick(View v) {
-                if(null == mLocationClient){
-                    initCurrentLoacation();
-                }
-                if(mLocationClient.isStarted()){
-                    mLocationClient.stop();
-                }else{
-                    mLocationClient.start();
-                }
-
+            public void onNoMultiClick(View v) {
+//                showListAndShowFloor();
+//                mEdtSearchTx.setText("");
+//                radioButtonMeal.setChecked(true);
+                mLocationManager.startLocationSearch();
+                btnResourceCode = btnNavigationMap.getId();
+            }
+        });
+        btnGetCurrentPosition.setOnClickListener(new NoMultiClickListener() {
+            @Override
+            public void onNoMultiClick(View v) {
+                mLocationManager.startLocationSearch();
+                btnResourceCode = btnGetCurrentPosition.getId();
             }
         });
     }
@@ -474,7 +484,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
                 mMapBaseIndoorMapInfo = mapBaseIndoorMapInfo;
             }
         });
-        MapUtils.mapMoveTo(mBaiduMap,testLat,testLon );
+        mapUtilsHelper.mapMoveTo(mBaiduMap,testLat,testLon );
     }
 
     /**
@@ -562,7 +572,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//设置高精度定位定位模式
         option.setCoorType("bd09ll");//设置百度经纬度坐标系格式
-        option.setScanSpan(0);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setScanSpan(5*1000);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
         option.setOpenGps(true);//可选，默认false,设置是否使用gps
         option.setNeedDeviceDirect(true); //返回的定位结果包含手机机头方向
         option.setIsNeedAddress(true);//反编译获得具体位置，只有网络定位才可以
@@ -637,13 +647,37 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
     public void dimissListAndShowFloor(){
         navigationListLayout.setVisibility(View.GONE);
-        stripListView.setVisibility(View.VISIBLE);
+        MapBaseIndoorMapInfo indoorInfo = mBaiduMap.getFocusedBaseIndoorMapInfo();
+        if (indoorInfo != null) {
+            stripListView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void showListAndShowFloor(){
         navigationListLayout.setVisibility(View.VISIBLE);
         stripListView.setVisibility(View.GONE);
 
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(LocationMsgEvent event) {
+
+        if(btnResourceCode == btnNavigationMap.getId()){
+            BDLocation callbackLocation = event.getCallbackLocation();
+
+            MapBaseIndoorMapInfo indoorInfo = mBaiduMap.getFocusedBaseIndoorMapInfo();
+            String indoorId = indoorInfo!=null?indoorInfo.getID():"";
+
+            Intent navigationIntent = new Intent();
+            navigationIntent.setClass(InDoorActivity.this,NavigationMapActivity.class);
+            navigationIntent.putExtra("callbackLocation",callbackLocation);
+            navigationIntent.putExtra("indoorId",indoorId);
+            startActivity(navigationIntent);
+        }else if(btnResourceCode == btnGetCurrentPosition.getId()){
+            mapUtilsHelper.mapMoveTo(mLocationManager.getMapView().getMap(),event.getCallbackLocation().getLatitude(),event.getCallbackLocation().getLongitude());
+        }
+        btnResourceCode=0;
     }
 
 }

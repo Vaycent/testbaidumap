@@ -6,9 +6,11 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.Poi;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
-import vaycent.testbaidumap.MapUtils;
+import vaycent.testbaidumap.EventBus.LocationMsgEvent;
 
 /**
  * Created by vaycent on 2017/5/24.
@@ -145,9 +147,12 @@ public class LocationManagerClientListener implements BDLocationListener {
 
 
         //Vaycent
-        MapUtils.mapMoveTo(mLocationManager.getMapView().getMap(),callbackLocation.getLatitude(),callbackLocation.getLongitude());
-        mLocationManager.stopLocationSearch();
-        mLocationManager.setResultLocation(callbackLocation);
+        if(4.9E-324D!=callbackLocation.getLatitude()&&4.9E-324D!=callbackLocation.getLongitude()) {
+            mLocationManager.stopLocationSearch();
+            mLocationManager.setResultLocation(callbackLocation);
+            EventBus.getDefault().post(new LocationMsgEvent(callbackLocation));
+        }
+
     }
 
     @Override

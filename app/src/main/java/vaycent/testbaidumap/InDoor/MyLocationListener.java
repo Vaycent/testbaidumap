@@ -9,8 +9,6 @@ import com.baidu.mapapi.map.BaiduMap;
 
 import java.util.List;
 
-import vaycent.testbaidumap.MapUtils;
-
 /**
  * Created by vaycent on 2017/5/15.
  */
@@ -133,7 +131,7 @@ public class MyLocationListener implements BDLocationListener {
 
         Log.i("BaiduLocationApiDem", sb.toString());
 
-        MapUtils.mapMoveTo(listenerBaiduMap,location.getLatitude(),location.getLongitude());
+//        MapUtils.mapMoveTo(listenerBaiduMap,location.getLatitude(),location.getLongitude());
 
     }
 

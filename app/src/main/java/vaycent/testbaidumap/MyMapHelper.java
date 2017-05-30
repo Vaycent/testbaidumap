@@ -9,8 +9,9 @@ public class MyMapHelper {
     //广州广百 23.129894,113.274697
     //北京南站 39.871281,116.385306
     //北京国际机场 40.085139,116.598636
-    public static final double testLat = 40.085339;
-    public static final double testLon = 116.600913;
+    //广州白云国际机场 23.391635,113.309171
+    public static final double testLat = 23.129894;
+    public static final double testLon = 113.274697;
     public static final String testFloor = "F1";
 
     public static final double beijingNanLat = 39.871281;

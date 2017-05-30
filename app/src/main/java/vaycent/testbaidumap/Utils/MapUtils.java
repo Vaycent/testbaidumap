@@ -1,4 +1,4 @@
-package vaycent.testbaidumap;
+package vaycent.testbaidumap.Utils;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapStatus;
@@ -11,7 +11,7 @@ import com.baidu.mapapi.model.LatLng;
 
 public class MapUtils {
 
-    public static void mapMoveTo(BaiduMap mBaiduMap,double lat, double lon){
+    public void mapMoveTo(BaiduMap mBaiduMap,double lat, double lon){
         //控制地图镜头开始位置
         LatLng centerpos = new LatLng(lat,lon); // 西单大悦城
         MapStatus.Builder builder = new MapStatus.Builder();

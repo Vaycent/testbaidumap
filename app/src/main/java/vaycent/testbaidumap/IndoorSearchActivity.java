@@ -26,6 +26,7 @@ import com.baidu.mapapi.search.poi.PoiSearch;
 import vaycent.testbaidumap.InDoor.BaseStripAdapter;
 import vaycent.testbaidumap.InDoor.StripListView;
 import vaycent.testbaidumap.Poi.IndoorPoiOverlay;
+import vaycent.testbaidumap.Utils.MapUtils;
 
 
 public class IndoorSearchActivity extends Activity implements OnGetPoiSearchResultListener,
@@ -43,6 +44,10 @@ public class IndoorSearchActivity extends Activity implements OnGetPoiSearchResu
     private final double testLat = MyMapHelper.beijingNanLat;
     private final double testLon = MyMapHelper.beijingNanLon;
 
+
+    private MapUtils mapUtilsHelper = new MapUtils();
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +57,7 @@ public class IndoorSearchActivity extends Activity implements OnGetPoiSearchResu
         mBaiduMap = mMapView.getMap();
 
 
-        MapUtils.mapMoveTo(mBaiduMap,testLat,testLon); // 北京南站
+        mapUtilsHelper.mapMoveTo(mBaiduMap,testLat,testLon); // 北京南站
 
      //   stripView = (StripListView) findViewById(R.id.stripView);
         stripView = new StripListView(this);
