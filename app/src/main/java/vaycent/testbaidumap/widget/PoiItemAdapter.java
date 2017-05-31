@@ -19,6 +19,7 @@ import java.util.List;
 import vaycent.testbaidumap.NavigationMapActivity;
 import vaycent.testbaidumap.Objects.ResultRoutePlan;
 import vaycent.testbaidumap.R;
+import vaycent.testbaidumap.Utils.MapUtils;
 
 /**
  * Created by vaycent on 2017/5/19.
@@ -29,6 +30,9 @@ public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHo
     private NavigationMapActivity activity;
     private List<PoiIndoorInfo> mPoiIndoorInfoDatas;
     private BDLocation resultCallBackLocation;
+
+    private MapUtils mapUtilsHelper = new MapUtils();
+
 
     public PoiItemAdapter(NavigationMapActivity activity, List<PoiIndoorInfo> mPoiIndoorInfoDatas ,BDLocation resultCallBackLocation) {
         this.activity = activity;
@@ -49,7 +53,9 @@ public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHo
     public void onBindViewHolder(MyViewHolder holder, final int position)
     {
         holder.nameTv.setText(mPoiIndoorInfoDatas.get(position).name);
-        holder.distanceTv.setText(mPoiIndoorInfoDatas.get(position).address);
+
+        holder.distanceTv.setText(getDistanceText(position));
+
         holder.floorTv.setText(mPoiIndoorInfoDatas.get(position).floor);
 
         holder.itemLayout.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +97,11 @@ public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHo
         }
     }
 
+    private String getDistanceText(int position){
+        LatLng currentLatLng = new LatLng(resultCallBackLocation.getLatitude(),resultCallBackLocation.getLongitude());
+        int distance = mapUtilsHelper.calculateDistance(currentLatLng,mPoiIndoorInfoDatas.get(position).latLng);
+        return "离目的地距离"+distance+"米";
+    }
 
     private void searchOnePoiResult(int position){
         List<PoiIndoorInfo> mListPoiIndoorInfo = new ArrayList<PoiIndoorInfo>();

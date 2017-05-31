@@ -4,6 +4,7 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
 
 /**
  * Created by vaycent on 2017/2/20.
@@ -17,6 +18,11 @@ public class MapUtils {
         MapStatus.Builder builder = new MapStatus.Builder();
         builder.target(centerpos).zoom(19.0f);
         mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+    }
+
+    public int calculateDistance(LatLng currentLatLng,LatLng targetLatLng){
+        int distance = (int)(DistanceUtil.getDistance(currentLatLng, targetLatLng));
+        return distance;
     }
 
 

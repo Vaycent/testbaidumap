@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".IndoorSearchActivity"
+            android:name=".PathSearchActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="Vaycent Test"
             android:screenOrientation="portrait">
@@ -55,9 +55,15 @@
 
         <activity
             android:name=".NavigationMapActivity"
-            android:label="@string/title_activity_navigation_map"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:label="Vaycent Test"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".PathPlanActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:label="Vaycent Test"/>
     </application>
 
 </manifest>

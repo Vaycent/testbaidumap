@@ -4,7 +4,7 @@ package vaycent.testbaidumap;
  * Created by vaycent on 2017/5/19.
  */
 
-public class MyMapHelper {
+public class StaticValMapHelper {
     //北京大悦城 39.916958,116.379278
     //广州广百 23.129894,113.274697
     //北京南站 39.871281,116.385306

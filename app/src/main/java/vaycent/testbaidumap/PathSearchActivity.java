@@ -1,6 +1,7 @@
 package vaycent.testbaidumap;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapBaseIndoorMapInfo;
 import com.baidu.mapapi.map.MapView;
@@ -29,7 +31,7 @@ import vaycent.testbaidumap.Poi.IndoorPoiOverlay;
 import vaycent.testbaidumap.Utils.MapUtils;
 
 
-public class IndoorSearchActivity extends Activity implements OnGetPoiSearchResultListener,
+public class PathSearchActivity extends Activity implements OnGetPoiSearchResultListener,
         BaiduMap.OnBaseIndoorMapListener {
     private MapView mMapView;
     private BaiduMap mBaiduMap;
@@ -41,17 +43,27 @@ public class IndoorSearchActivity extends Activity implements OnGetPoiSearchResu
     MapBaseIndoorMapInfo mMapBaseIndoorMapInfo = null;
 
 
-    private final double testLat = MyMapHelper.beijingNanLat;
-    private final double testLon = MyMapHelper.beijingNanLon;
+    private final double testLat = StaticValMapHelper.beijingNanLat;
+    private final double testLon = StaticValMapHelper.beijingNanLon;
+
+
+
+
 
 
     private MapUtils mapUtilsHelper = new MapUtils();
+
+    private BDLocation resultCallBackLocation = null;
+    private String indoorId = "";
+    private PoiSearch navigationPoiSearch;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_indoor_search);
+
+        initData();
 
         mMapView = (MapView) findViewById(R.id.bmapView);
         mBaiduMap = mMapView.getMap();
@@ -78,7 +90,7 @@ public class IndoorSearchActivity extends Activity implements OnGetPoiSearchResu
             public void onClick(View v) {
                 MapBaseIndoorMapInfo indoorInfo = mBaiduMap.getFocusedBaseIndoorMapInfo();
                 if (indoorInfo == null) {
-                    Toast.makeText(IndoorSearchActivity.this, "当前无室内图，无法搜索" , Toast.LENGTH_LONG).show();
+                    Toast.makeText(PathSearchActivity.this, "当前无室内图，无法搜索" , Toast.LENGTH_LONG).show();
                     return;
                 }
                 PoiIndoorOption option = new PoiIndoorOption().poiIndoorBid(
@@ -122,7 +134,7 @@ public class IndoorSearchActivity extends Activity implements OnGetPoiSearchResu
     public void onGetPoiIndoorResult(PoiIndoorResult result) {
         mBaiduMap.clear();
         if (result == null  || result.error == PoiIndoorResult.ERRORNO.RESULT_NOT_FOUND) {
-            Toast.makeText(IndoorSearchActivity.this, "无结果" , Toast.LENGTH_LONG).show();
+            Toast.makeText(PathSearchActivity.this, "无结果" , Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -179,7 +191,7 @@ public class IndoorSearchActivity extends Activity implements OnGetPoiSearchResu
          */
         public boolean onPoiClick(int i) {
             PoiIndoorInfo info =  getIndoorPoiResult().getmArrayPoiInfo().get(i);
-            Toast.makeText(IndoorSearchActivity.this, info.name + ",在" + info.floor + "层,坐标:"+info.latLng.latitude+","+info.latLng.longitude, Toast.LENGTH_LONG).show();
+            Toast.makeText(PathSearchActivity.this, info.name + ",在" + info.floor + "层,坐标:"+info.latLng.latitude+","+info.latLng.longitude, Toast.LENGTH_LONG).show();
             return false;
         }
 
@@ -205,7 +217,7 @@ public class IndoorSearchActivity extends Activity implements OnGetPoiSearchResu
 
         MapBaseIndoorMapInfo indoorInfo = mBaiduMap.getFocusedBaseIndoorMapInfo();
         if (indoorInfo == null) {
-            Toast.makeText(IndoorSearchActivity.this, "当前无室内图，无法搜索" , Toast.LENGTH_LONG).show();
+            Toast.makeText(PathSearchActivity.this, "当前无室内图，无法搜索" , Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -222,7 +234,7 @@ public class IndoorSearchActivity extends Activity implements OnGetPoiSearchResu
 
 
         if(option == null){
-            Toast.makeText(IndoorSearchActivity.this, "当前无室内POI无法搜索" , Toast.LENGTH_LONG).show();
+            Toast.makeText(PathSearchActivity.this, "当前无室内POI无法搜索" , Toast.LENGTH_LONG).show();
             return;
         }
 //        Log.e("Vaycent","option.bid:"+option.bid);
@@ -238,7 +250,7 @@ public class IndoorSearchActivity extends Activity implements OnGetPoiSearchResu
     public void onGetPoiResult(PoiResult result) {
         // 获取POI检索结果
         if (result == null || result.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {// 没有找到检索结果
-            Toast.makeText(IndoorSearchActivity.this, "未找到结果",Toast.LENGTH_LONG).show();
+            Toast.makeText(PathSearchActivity.this, "未找到结果",Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -267,6 +279,21 @@ public class IndoorSearchActivity extends Activity implements OnGetPoiSearchResu
             }
         }
     }
+
+
+
+
+    private void initData() {
+        Intent fromIntent = getIntent();
+        if (null != fromIntent && null != fromIntent.getParcelableExtra("callbackLocation"))
+            resultCallBackLocation = fromIntent.getParcelableExtra("callbackLocation");
+        if (null != fromIntent && null != fromIntent.getStringExtra("indoorId"))
+            indoorId = fromIntent.getStringExtra("indoorId");
+
+        navigationPoiSearch = navigationPoiSearch.newInstance();
+        navigationPoiSearch.setOnGetPoiSearchResultListener(this);
+    }
+
 
 
 }

@@ -1,11 +1,12 @@
 package vaycent.testbaidumap;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import java.util.List;
 import vaycent.testbaidumap.EventBus.OnePoiMsgEvent;
 import vaycent.testbaidumap.EventBus.RoutePlanMsgEvent;
 import vaycent.testbaidumap.Objects.ResultRoutePlan;
+import vaycent.testbaidumap.databinding.NavigationMapActivityBinding;
 import vaycent.testbaidumap.widget.PoiItemAdapter;
 
 
@@ -33,21 +35,20 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
 
     private BDLocation resultCallBackLocation = null;
     private String indoorId = "";
+    private PoiSearch navigationPoiSearch;
 
-    private RadioGroup contentRadioGroup;
+    private NavigationMapActivityBinding mBinding;
+
     private String currentTab;
     private String lastTab;
-    private RecyclerView poiListView;
     private PoiItemAdapter poiItemAdapter;
     private List<PoiIndoorInfo> poiInfosList;
-    //Poi Search
-    private PoiSearch navigationPoiSearch;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_navigation_map);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_navigation_map);
 
         initData();
 
@@ -91,24 +92,21 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
             return;
         }
 
-        Log.e("Vaycent", "result.getmArrayPoiInfo().size:" + poiIndoorResult.getmArrayPoiInfo().size());
-        for (int i = 0; i < poiIndoorResult.getmArrayPoiInfo().size(); i++) {
-            Log.e("Vaycent", "name:" + poiIndoorResult.getmArrayPoiInfo().get(i).name);
-        }
-
         if (poiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR) {
             if(null == poiInfosList)
                 poiInfosList= new ArrayList<PoiIndoorInfo>();
 
-            poiListView.setLayoutManager(new LinearLayoutManager(this));
+            mBinding.activityNavigationmapRvCommonflightlistview.setLayoutManager(new LinearLayoutManager(this));
             poiInfosList.clear();
             poiInfosList.addAll(poiIndoorResult.getmArrayPoiInfo());//每个点的超详细信息
 
             poiItemAdapter = new PoiItemAdapter(this,poiInfosList,resultCallBackLocation);
-            poiListView.setAdapter(poiItemAdapter);
+            mBinding.activityNavigationmapRvCommonflightlistview.setAdapter(poiItemAdapter);
             poiItemAdapter.notifyDataSetChanged();
         }
     }
+
+
 
 
     private void initData() {
@@ -123,14 +121,33 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
     }
 
     private void initLayout() {
-        contentRadioGroup = (RadioGroup) findViewById(R.id.activity_navigationmap_rd_content_tab);
-        changeTabMode();
-        poiListView = (RecyclerView) findViewById(R.id.activity_navigationmap_rv_commonflightlistview);
 
+        changeTabMode();
+
+        mBinding.activityNavigationmapEtSearchtext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!mBinding.activityNavigationmapEtSearchtext.getText().toString().trim().equals("")){
+                    indoorNearBySearch(1,mBinding.activityNavigationmapEtSearchtext.getText().toString().trim());
+                    mBinding.activityNavigationmapRdContentTab.clearCheck();
+                    lastTab = null;
+                }
+            }
+        });
     }
 
     private void changeTabMode() {
-        contentRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        mBinding.activityNavigationmapRdContentTab.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 lastTab = currentTab;
@@ -152,8 +169,8 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
                         break;
                 }
 
-                //根据选择的tab进行查询
                 if (currentTab != lastTab) {
+                    mBinding.activityNavigationmapEtSearchtext.setText("");
                     indoorNearBySearch(1, currentTab);
                 }
             }
