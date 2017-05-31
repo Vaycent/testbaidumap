@@ -3,6 +3,7 @@ package vaycent.testbaidumap;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.RadioGroup;
@@ -17,8 +18,14 @@ import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
 import java.util.List;
 
+import vaycent.testbaidumap.EventBus.OnePoiMsgEvent;
+import vaycent.testbaidumap.EventBus.RoutePlanMsgEvent;
+import vaycent.testbaidumap.Objects.ResultRoutePlan;
 import vaycent.testbaidumap.widget.PoiItemAdapter;
 
 
@@ -42,7 +49,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_map);
 
-        getDataFromLocation();
+        initData();
 
         initLayout();
     }
@@ -80,7 +87,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
     @Override
     public void onGetPoiIndoorResult(PoiIndoorResult poiIndoorResult) {
         if (poiIndoorResult == null || poiIndoorResult.error == PoiIndoorResult.ERRORNO.RESULT_NOT_FOUND) {
-            Toast.makeText(NavigationMapActivity.this, "无结果", Toast.LENGTH_LONG).show();
+            Toast.makeText(NavigationMapActivity.this, "无室内搜索结果", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -89,27 +96,30 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
             Log.e("Vaycent", "name:" + poiIndoorResult.getmArrayPoiInfo().get(i).name);
         }
 
-//        if (poiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR) {
-//            if(null == poiInfosList)
-//                poiInfosList= new ArrayList<PoiIndoorInfo>();
-//
-//            poiListView.setLayoutManager(new LinearLayoutManager(this));
-//            poiInfosList.clear();
-//            poiInfosList.addAll(poiIndoorResult.getmArrayPoiInfo());//每个点的超详细信息
-//
-//            poiItemAdapter = new PoiItemAdapter(this,mMapView,poiInfosList,mRoutePlanSearch);
-//            poiListView.setAdapter(poiItemAdapter);
-//            poiItemAdapter.notifyDataSetChanged();
-//        }
+        if (poiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR) {
+            if(null == poiInfosList)
+                poiInfosList= new ArrayList<PoiIndoorInfo>();
+
+            poiListView.setLayoutManager(new LinearLayoutManager(this));
+            poiInfosList.clear();
+            poiInfosList.addAll(poiIndoorResult.getmArrayPoiInfo());//每个点的超详细信息
+
+            poiItemAdapter = new PoiItemAdapter(this,poiInfosList,resultCallBackLocation);
+            poiListView.setAdapter(poiItemAdapter);
+            poiItemAdapter.notifyDataSetChanged();
+        }
     }
 
 
-    private void getDataFromLocation() {
+    private void initData() {
         Intent fromIntent = getIntent();
         if (null != fromIntent && null != fromIntent.getParcelableExtra("callbackLocation"))
             resultCallBackLocation = fromIntent.getParcelableExtra("callbackLocation");
         if (null != fromIntent && null != fromIntent.getStringExtra("indoorId"))
             indoorId = fromIntent.getStringExtra("indoorId");
+
+        navigationPoiSearch = navigationPoiSearch.newInstance();
+        navigationPoiSearch.setOnGetPoiSearchResultListener(this);
     }
 
     private void initLayout() {
@@ -161,6 +171,17 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
         }
         navigationPoiSearch.searchPoiIndoor(option);
     }
+
+    public void returnResultOnePoi(PoiIndoorResult resultPoiIndoorInfo){
+        EventBus.getDefault().post(new OnePoiMsgEvent(resultPoiIndoorInfo));
+        this.finish();
+    }
+
+    public void returnResultRoutePlan(ResultRoutePlan mResultRoutePlan){
+        EventBus.getDefault().post(new RoutePlanMsgEvent(mResultRoutePlan));
+        this.finish();
+    }
+
 
 }
 

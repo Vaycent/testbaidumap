@@ -1,6 +1,5 @@
 package vaycent.testbaidumap.widget;
 
-import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,22 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
-import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.poi.PoiIndoorInfo;
 import com.baidu.mapapi.search.poi.PoiIndoorResult;
-import com.baidu.mapapi.search.route.IndoorPlanNode;
-import com.baidu.mapapi.search.route.IndoorRoutePlanOption;
-import com.baidu.mapapi.search.route.RoutePlanSearch;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import vaycent.testbaidumap.Location.LocationManager;
-import vaycent.testbaidumap.MyMapHelper;
+import vaycent.testbaidumap.NavigationMapActivity;
+import vaycent.testbaidumap.Objects.ResultRoutePlan;
 import vaycent.testbaidumap.R;
 
 /**
@@ -32,23 +26,21 @@ import vaycent.testbaidumap.R;
 
 public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHolder>
 {
-    private Context context;
+    private NavigationMapActivity activity;
     private List<PoiIndoorInfo> mPoiIndoorInfoDatas;
-    private RoutePlanSearch mRoutePlanSearch;
-    private MapView mMapView;
+    private BDLocation resultCallBackLocation;
 
-    public PoiItemAdapter(Context context, MapView mMapView, List<PoiIndoorInfo> mPoiIndoorInfoDatas, RoutePlanSearch mRoutePlanSearch) {
-        this.context = context;
-        this.mMapView = mMapView;
+    public PoiItemAdapter(NavigationMapActivity activity, List<PoiIndoorInfo> mPoiIndoorInfoDatas ,BDLocation resultCallBackLocation) {
+        this.activity = activity;
         this.mPoiIndoorInfoDatas = mPoiIndoorInfoDatas;
-        this.mRoutePlanSearch = mRoutePlanSearch;
+        this.resultCallBackLocation = resultCallBackLocation;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         MyViewHolder holder = new MyViewHolder(LayoutInflater.from(
-                context).inflate(R.layout.adapter_poiitem, parent,
+                activity).inflate(R.layout.adapter_poiitem, parent,
                 false));
         return holder;
     }
@@ -69,11 +61,7 @@ public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHo
         holder.startIconIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LocationManager mStartLM = startLocation();
-
-                planRouteInDoor(position,mStartLM);
-
-                searchOnePoiResult(position);
+                planRouteInDoor(position);
             }
         });
     }
@@ -99,16 +87,10 @@ public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHo
             nameTv = (TextView) view.findViewById(R.id.adapter_poiitem_tv_placename);
             distanceTv = (TextView) view.findViewById(R.id.adapter_poiitem_tv_distance);
             floorTv = (TextView)view.findViewById(R.id.adapter_poiitem_tv_floor);
-//            adapter_poiitem_tv_floor
             startIconIv = (Button) view.findViewById(R.id.adapter_poiitem_iv_startnavigation);
         }
     }
 
-    private LocationManager startLocation(){
-        LocationManager mLocationManager = LocationManager.getLocationSingInstance(context,mMapView);
-        mLocationManager.startLocationSearch();
-        return mLocationManager;
-    }
 
     private void searchOnePoiResult(int position){
         List<PoiIndoorInfo> mListPoiIndoorInfo = new ArrayList<PoiIndoorInfo>();
@@ -117,24 +99,18 @@ public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHo
         mPoiIndoorResult.setPageNum(1);
         mPoiIndoorResult.setPoiNum(1);
         mPoiIndoorResult.setmArrayPoiInfo(mListPoiIndoorInfo);
-
-//        activity.onGetPoiIndoorResult(mPoiIndoorResult);
-//        activity.dimissListAndShowFloor();
+        activity.returnResultOnePoi(mPoiIndoorResult);
     }
 
-    private void planRouteInDoor(int position,LocationManager mStartLM){
-        BDLocation location = mStartLM.getResultLocation();
-        if(null!=location){
-            LatLng startLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-            String startFloor = location.getFloor();
+    private void planRouteInDoor(int position){
+        if(null!=resultCallBackLocation){
+            LatLng startLatLng = new LatLng(resultCallBackLocation.getLatitude(),resultCallBackLocation.getLongitude());
+            String startFloor = resultCallBackLocation.getFloor();
             LatLng endLatLng = mPoiIndoorInfoDatas.get(position).latLng;
             String endFloor = mPoiIndoorInfoDatas.get(position).floor;
 
-            IndoorPlanNode startNode = new IndoorPlanNode(startLatLng, MyMapHelper.testFloor);//39.917380,
-            IndoorPlanNode endNode = new IndoorPlanNode(endLatLng,endFloor);
-            IndoorRoutePlanOption irpo = new IndoorRoutePlanOption().from(startNode).to(endNode);
-            mRoutePlanSearch.walkingIndoorSearch(irpo);
-            Toast.makeText(context,"路线规划",Toast.LENGTH_SHORT).show();
+            ResultRoutePlan mResultRoutePlan = new ResultRoutePlan(startLatLng,startFloor,endLatLng,endFloor);
+            activity.returnResultRoutePlan(mResultRoutePlan);
         }
     }
 }

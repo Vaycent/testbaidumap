@@ -147,6 +147,8 @@ public class LocationManagerClientListener implements BDLocationListener {
 
 
         //Vaycent
+        if(null == callbackLocation.getFloor())
+            callbackLocation.setFloor("F1");
         if(4.9E-324D!=callbackLocation.getLatitude()&&4.9E-324D!=callbackLocation.getLongitude()) {
             mLocationManager.stopLocationSearch();
             mLocationManager.setResultLocation(callbackLocation);

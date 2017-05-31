@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -56,15 +55,17 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import vaycent.testbaidumap.EventBus.LocationMsgEvent;
+import vaycent.testbaidumap.EventBus.OnePoiMsgEvent;
+import vaycent.testbaidumap.EventBus.RoutePlanMsgEvent;
 import vaycent.testbaidumap.InDoor.BaseStripAdapter;
 import vaycent.testbaidumap.InDoor.IndoorRouteOverlay;
 import vaycent.testbaidumap.InDoor.MyLocationListener;
 import vaycent.testbaidumap.InDoor.StripListView;
 import vaycent.testbaidumap.Location.LocationManager;
+import vaycent.testbaidumap.Objects.ResultRoutePlan;
 import vaycent.testbaidumap.Poi.IndoorPoiOverlay;
 import vaycent.testbaidumap.Utils.MapUtils;
 import vaycent.testbaidumap.Utils.NoMultiClickListener;
@@ -120,6 +121,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
 
         initLayout();
 
@@ -129,14 +131,10 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
         changeTabMode();
 
-
-//        isZh();
-
     }
     @Override
     protected void onStart(){
         super.onStart();
-        EventBus.getDefault().register(this);
     }
     @Override
     protected void onResume() {
@@ -151,7 +149,6 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     @Override
     protected void onStop(){
         super.onStop();
-        EventBus.getDefault().unregister(this);
         if(null!=mLocationClient&&mLocationClient.isStarted())
             mLocationClient.stop();
     }
@@ -162,6 +159,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         mRoutePlanSearch.destroy();
         mPoiSearch.destroy();
         mLocationManager.destroy();
+        EventBus.getDefault().unregister(this);
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -200,8 +198,6 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     @Override
     public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
 
-//        navigationListLayout.setVisibility(View.GONE);
-//        stripListView.setVisibility(View.VISIBLE);
 
         if (indoorRouteResult.error == SearchResult.ERRORNO.NO_ERROR) {
             IndoorRouteOverlay overlay = new IndoorRouteOverlay(mBaiduMap);
@@ -211,7 +207,8 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             overlay.setData(indoorRouteResult.getRouteLines().get(0));
             overlay.addToMap();
             overlay.zoomToSpan();
-//            Toast.makeText(this,"onGetIndoorRouteResult",Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(this,"室内路线规划失败["+indoorRouteResult.error.toString()+"]",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -292,23 +289,23 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         }
 
         if (poiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR) {
-//            IndoorPoiOverlay overlay = new MyIndoorPoiOverlay(mBaiduMap);
-//            mBaiduMap.setOnMarkerClickListener(overlay);
-//            overlay.setData(poiIndoorResult);
-//            overlay.addToMap();
-//            overlay.zoomToSpan();
+            IndoorPoiOverlay overlay = new MyIndoorPoiOverlay(mBaiduMap);
+            mBaiduMap.setOnMarkerClickListener(overlay);
+            overlay.setData(poiIndoorResult);
+            overlay.addToMap();
+            overlay.zoomToSpan();
 
 
-            if(null == poiInfosList)
-                poiInfosList= new ArrayList<PoiIndoorInfo>();
-
-            poiListView.setLayoutManager(new LinearLayoutManager(this));
-            poiInfosList.clear();
-            poiInfosList.addAll(poiIndoorResult.getmArrayPoiInfo());//每个点的超详细信息
-
-            poiItemAdapter = new PoiItemAdapter(this,mMapView,poiInfosList,mRoutePlanSearch);
-            poiListView.setAdapter(poiItemAdapter);
-            poiItemAdapter.notifyDataSetChanged();
+//            if(null == poiInfosList)
+//                poiInfosList= new ArrayList<PoiIndoorInfo>();
+//
+//            poiListView.setLayoutManager(new LinearLayoutManager(this));
+//            poiInfosList.clear();
+//            poiInfosList.addAll(poiIndoorResult.getmArrayPoiInfo());//每个点的超详细信息
+//
+//            poiItemAdapter = new PoiItemAdapter(this,mMapView,poiInfosList,mRoutePlanSearch);
+//            poiListView.setAdapter(poiItemAdapter);
+//            poiItemAdapter.notifyDataSetChanged();
         }
     }
 
@@ -419,9 +416,6 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         btnNavigationMap.setOnClickListener(new NoMultiClickListener() {
             @Override
             public void onNoMultiClick(View v) {
-//                showListAndShowFloor();
-//                mEdtSearchTx.setText("");
-//                radioButtonMeal.setChecked(true);
                 mLocationManager.startLocationSearch();
                 btnResourceCode = btnNavigationMap.getId();
             }
@@ -679,5 +673,34 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         }
         btnResourceCode=0;
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(RoutePlanMsgEvent event) {
+        if(null!=event.getResultRoutePlan()){
+            ResultRoutePlan mResultRoutePlan = event.getResultRoutePlan();
+            IndoorPlanNode startNode = new IndoorPlanNode(mResultRoutePlan.startLatLng, mResultRoutePlan.startFloor);
+            IndoorPlanNode endNode = new IndoorPlanNode(mResultRoutePlan.endLatLng,mResultRoutePlan.endFloor);
+            IndoorRoutePlanOption irpo = new IndoorRoutePlanOption().from(startNode).to(endNode);
+            mRoutePlanSearch.walkingIndoorSearch(irpo);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(OnePoiMsgEvent event) {
+        if(null!=event.getPoiIndoorResult()){
+            PoiIndoorResult mPoiIndoorResult = event.getPoiIndoorResult();
+
+            if(mPoiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR){
+                IndoorPoiOverlay overlay = new MyIndoorPoiOverlay(mBaiduMap);
+                mBaiduMap.setOnMarkerClickListener(overlay);
+                overlay.setData(mPoiIndoorResult);
+                overlay.addToMap();
+                overlay.zoomToSpan();
+            }
+        }
+    }
+
+
+
 
 }
