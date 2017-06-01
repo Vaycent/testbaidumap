@@ -101,9 +101,11 @@ public class PathPlanActivity extends Activity{
         mBinding.activityPathPlanBtnChange.setOnClickListener(new NoMultiClickListener() {
             @Override
             public void onNoMultiClick(View v) {
-                String temp = mBinding.activityPathPlanEdStart.getText().toString().trim();
-                mBinding.activityPathPlanEdStart.setText(mBinding.activityPathPlanEdEnd.getText().toString().trim());
-                mBinding.activityPathPlanEdEnd.setText(temp);
+                ResultPoiSearch tempResultPoiSearch = startResultPoiSearch;
+                startResultPoiSearch = endResultPoiSearch;
+                endResultPoiSearch = tempResultPoiSearch;
+                mBinding.setStartPoiSearch(startResultPoiSearch);
+                mBinding.setEndPoiSearch(endResultPoiSearch);
             }
         });
         mBinding.activityPathPlanBtnSearch.setOnClickListener(new NoMultiClickListener() {

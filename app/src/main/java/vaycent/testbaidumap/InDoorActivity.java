@@ -162,6 +162,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
 
         if (indoorRouteResult.error == SearchResult.ERRORNO.NO_ERROR) {
+            mBaiduMap.clear();
             IndoorRouteOverlay overlay = new IndoorRouteOverlay(mBaiduMap);
             mIndoorRouteline = indoorRouteResult.getRouteLines().get(0);
             nodeIndex = -1;
@@ -207,7 +208,6 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         }
 
         if (poiResult.error == SearchResult.ERRORNO.NO_ERROR) {// 检索结果正常返回
-//          mBaiduMap.clear();
             if(poiResult != null){
                 if(poiResult.getAllPoi()!= null && poiResult.getAllPoi().size()>0){
                     Log.e("Vaycent","result.getAllPoi() size:"+poiResult.getAllPoi());
@@ -397,10 +397,14 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             public void onBaseIndoorMapMode(boolean b, MapBaseIndoorMapInfo mapBaseIndoorMapInfo) {
                 if (b == false || mapBaseIndoorMapInfo == null) {
                     stripListView.setVisibility(View.INVISIBLE);
+                    mBinding.activityIndoorBtnNavigationmap.setVisibility(View.INVISIBLE);
+                    mBinding.activityIndoorBtnPath.setVisibility(View.INVISIBLE);
                     return;
                 }
                 mFloorListAdapter.setmFloorList( mapBaseIndoorMapInfo.getFloors());
                 stripListView.setVisibility(View.VISIBLE);
+                mBinding.activityIndoorBtnNavigationmap.setVisibility(View.VISIBLE);
+                mBinding.activityIndoorBtnPath.setVisibility(View.VISIBLE);
                 stripListView.setStripAdapter(mFloorListAdapter);
                 mMapBaseIndoorMapInfo = mapBaseIndoorMapInfo;
             }

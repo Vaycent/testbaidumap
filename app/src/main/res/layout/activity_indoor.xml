@@ -63,7 +63,8 @@
                 android:layout_height="30dp"
                 android:layout_above="@+id/activity_indoor_btn_currentposition"
                 android:layout_margin="10dp"
-                android:background="@drawable/navigation_map_icon"/>
+                android:background="@drawable/navigation_map_icon"
+                android:visibility="invisible"/>
 
             <Button
                 android:id="@+id/activity_indoor_btn_currentposition"
@@ -81,7 +82,8 @@
                 android:layout_above="@+id/activity_indoor_llyt_pathmsglayout"
                 android:layout_alignParentRight="true"
                 android:layout_margin="10dp"
-                android:background="@drawable/path_plan_icon"/>
+                android:background="@drawable/path_plan_icon"
+                android:visibility="invisible"/>
 
 
             <LinearLayout
