@@ -1,5 +1,7 @@
 package vaycent.testbaidumap.widget;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,10 +15,14 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.poi.PoiIndoorInfo;
 import com.baidu.mapapi.search.poi.PoiIndoorResult;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import vaycent.testbaidumap.NavigationMapActivity;
+import vaycent.testbaidumap.EventBus.OnePoiMsgEvent;
+import vaycent.testbaidumap.EventBus.RoutePlanMsgEvent;
+import vaycent.testbaidumap.InDoorActivity;
 import vaycent.testbaidumap.Objects.ResultRoutePlan;
 import vaycent.testbaidumap.R;
 import vaycent.testbaidumap.Utils.MapUtils;
@@ -25,17 +31,17 @@ import vaycent.testbaidumap.Utils.MapUtils;
  * Created by vaycent on 2017/5/19.
  */
 
-public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHolder>
+public class NavigationItemAdapter extends RecyclerView.Adapter<NavigationItemAdapter.MyViewHolder>
 {
-    private NavigationMapActivity activity;
+    private Context context;
     private List<PoiIndoorInfo> mPoiIndoorInfoDatas;
     private BDLocation resultCallBackLocation;
 
     private MapUtils mapUtilsHelper = new MapUtils();
 
 
-    public PoiItemAdapter(NavigationMapActivity activity, List<PoiIndoorInfo> mPoiIndoorInfoDatas ,BDLocation resultCallBackLocation) {
-        this.activity = activity;
+    public NavigationItemAdapter(Context context, List<PoiIndoorInfo> mPoiIndoorInfoDatas , BDLocation resultCallBackLocation) {
+        this.context = context;
         this.mPoiIndoorInfoDatas = mPoiIndoorInfoDatas;
         this.resultCallBackLocation = resultCallBackLocation;
     }
@@ -44,7 +50,7 @@ public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHo
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         MyViewHolder holder = new MyViewHolder(LayoutInflater.from(
-                activity).inflate(R.layout.adapter_poiitem, parent,
+                context).inflate(R.layout.adapter_poiitem, parent,
                 false));
         return holder;
     }
@@ -110,7 +116,9 @@ public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHo
         mPoiIndoorResult.setPageNum(1);
         mPoiIndoorResult.setPoiNum(1);
         mPoiIndoorResult.setmArrayPoiInfo(mListPoiIndoorInfo);
-        activity.returnResultOnePoi(mPoiIndoorResult);
+//        activity.returnResultOnePoi(mPoiIndoorResult);
+        EventBus.getDefault().post(new OnePoiMsgEvent(mPoiIndoorResult));
+        backToInDoorActivity();
     }
 
     private void planRouteInDoor(int position){
@@ -121,7 +129,16 @@ public class PoiItemAdapter extends RecyclerView.Adapter<PoiItemAdapter.MyViewHo
             String endFloor = mPoiIndoorInfoDatas.get(position).floor;
 
             ResultRoutePlan mResultRoutePlan = new ResultRoutePlan(startLatLng,startFloor,endLatLng,endFloor);
-            activity.returnResultRoutePlan(mResultRoutePlan);
+//            activity.returnResultRoutePlan(mResultRoutePlan);
+
+            EventBus.getDefault().post(new RoutePlanMsgEvent(mResultRoutePlan));
+            backToInDoorActivity();
         }
+    }
+
+    private void backToInDoorActivity(){
+        Intent indoorIntent = new Intent();
+        indoorIntent.setClass(context, InDoorActivity.class);
+        context.startActivity(indoorIntent);
     }
 }

@@ -14,6 +14,8 @@ import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import java.util.ArrayList;
 import java.util.List;
 
+import vaycent.testbaidumap.R;
+
 /**
  * 用于显示indoorpoi的overly
  */
@@ -59,9 +61,11 @@ public class IndoorPoiOverlay extends OverlayManager {
             Bundle bundle = new Bundle();
             bundle.putInt("index", i);
             markerList.add(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromAssetWithDpi("Icon_mark"
-                            + markerSize + ".png")).extraInfo(bundle)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.point_marker)).extraInfo(bundle)
                     .position(mIndoorPoiResult.getmArrayPoiInfo().get(i).latLng));
+
+//            BitmapDescriptorFactory.fromAssetWithDpi("Icon_mark"
+//                    + markerSize + ".png")
 
         }
         return markerList;

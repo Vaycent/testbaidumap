@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vaycent.testbaidumap.Poi.OverlayManager;
+import vaycent.testbaidumap.R;
 
 public class IndoorRouteOverlay extends OverlayManager {
 
@@ -104,15 +105,18 @@ public class IndoorRouteOverlay extends OverlayManager {
         if (mRouteLine.getStarting() != null) {
             overlayList.add((new MarkerOptions()).position(mRouteLine.getStarting().getLocation())
                     .icon(getStartMarker() != null ? getStartMarker() :
-                            BitmapDescriptorFactory.fromAssetWithDpi("Icon_start.png"))
+                            BitmapDescriptorFactory.fromResource(R.drawable.pathline_start_icon))
                     .zIndex(10));
+            //BitmapDescriptorFactory.fromAssetWithDpi("Icon_start.png")
+
         }
         // 添加终点terminal
         if (mRouteLine.getTerminal() != null) {
             overlayList.add((new MarkerOptions()).position(mRouteLine.getTerminal().getLocation())
                     .icon(getTerminalMarker() != null ? getTerminalMarker() :
-                            BitmapDescriptorFactory.fromAssetWithDpi("Icon_end.png"))
+                            BitmapDescriptorFactory.fromResource(R.drawable.pathline_end_icon))
                     .zIndex(10));
+            //BitmapDescriptorFactory.fromAssetWithDpi("Icon_end.png")
         }
 
         // 添加线poly line list

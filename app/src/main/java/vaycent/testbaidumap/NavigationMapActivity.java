@@ -19,16 +19,11 @@ import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import vaycent.testbaidumap.EventBus.OnePoiMsgEvent;
-import vaycent.testbaidumap.EventBus.RoutePlanMsgEvent;
-import vaycent.testbaidumap.Objects.ResultRoutePlan;
 import vaycent.testbaidumap.databinding.NavigationMapActivityBinding;
-import vaycent.testbaidumap.widget.PoiItemAdapter;
+import vaycent.testbaidumap.widget.NavigationItemAdapter;
 
 
 public class NavigationMapActivity extends AppCompatActivity implements OnGetPoiSearchResultListener {
@@ -41,7 +36,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
 
     private String currentTab;
     private String lastTab;
-    private PoiItemAdapter poiItemAdapter;
+    private NavigationItemAdapter poiItemAdapter;
     private List<PoiIndoorInfo> poiInfosList;
 
 
@@ -100,7 +95,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
             poiInfosList.clear();
             poiInfosList.addAll(poiIndoorResult.getmArrayPoiInfo());//每个点的超详细信息
 
-            poiItemAdapter = new PoiItemAdapter(this,poiInfosList,resultCallBackLocation);
+            poiItemAdapter = new NavigationItemAdapter(this,poiInfosList,resultCallBackLocation);
             mBinding.activityNavigationmapRvCommonflightlistview.setAdapter(poiItemAdapter);
             poiItemAdapter.notifyDataSetChanged();
         }
@@ -187,16 +182,6 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
             return;
         }
         navigationPoiSearch.searchPoiIndoor(option);
-    }
-
-    public void returnResultOnePoi(PoiIndoorResult resultPoiIndoorInfo){
-        EventBus.getDefault().post(new OnePoiMsgEvent(resultPoiIndoorInfo));
-        this.finish();
-    }
-
-    public void returnResultRoutePlan(ResultRoutePlan mResultRoutePlan){
-        EventBus.getDefault().post(new RoutePlanMsgEvent(mResultRoutePlan));
-        this.finish();
     }
 
 

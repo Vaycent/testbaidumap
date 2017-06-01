@@ -14,7 +14,7 @@
         android:id="@+id/adapter_poiitem_iv_startnavigation"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:text="导航"
+        android:background="@drawable/start_navigation_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

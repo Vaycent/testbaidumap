@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
@@ -56,7 +57,7 @@ import vaycent.testbaidumap.Poi.IndoorPoiOverlay;
 import vaycent.testbaidumap.Utils.MapUtils;
 import vaycent.testbaidumap.Utils.NoMultiClickListener;
 import vaycent.testbaidumap.databinding.InDoorActivityBinding;
-import vaycent.testbaidumap.widget.PoiItemAdapter;
+import vaycent.testbaidumap.widget.NavigationItemAdapter;
 
 
 public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanResultListener,OnGetPoiSearchResultListener,
@@ -79,7 +80,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
     private String currentTab;
     private String lastTab;
-    private PoiItemAdapter poiItemAdapter;
+    private NavigationItemAdapter poiItemAdapter;
     private List<PoiIndoorInfo> poiInfosList;
     private int btnResourceCode=0;
 
@@ -380,6 +381,8 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         }
         // 隐藏地图上比例尺
         mBinding.activityMainMvMap.showScaleControl(false);
+        mBinding.activityMainMvMap.getChildAt(2).setLayoutParams(new LinearLayout.LayoutParams(180,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
         mBinding.activityMainMvMap.getChildAt(2).setPadding(0,0,50,800);//这是控制缩放控件的位置
 
 

@@ -33,6 +33,7 @@
             android:name=".InDoorActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="Vaycent Test"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -55,15 +56,20 @@
 
         <activity
             android:name=".NavigationMapActivity"
-            android:label="Vaycent Test"
             android:configChanges="orientation|keyboardHidden"
+            android:label="Vaycent Test"
             android:screenOrientation="portrait"/>
-
         <activity
             android:name=".PathPlanActivity"
+            android:label="Vaycent Test"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".PoiInDoorSearchActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:label="Vaycent Test"/>
+            android:label="Vaycent Test"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MultiPoiMapActivity">
+        </activity>
     </application>
 
 </manifest>

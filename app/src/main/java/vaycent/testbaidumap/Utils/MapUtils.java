@@ -14,7 +14,7 @@ public class MapUtils {
 
     public void mapMoveTo(BaiduMap mBaiduMap,double lat, double lon){
         //控制地图镜头开始位置
-        LatLng centerpos = new LatLng(lat,lon); // 西单大悦城
+        LatLng centerpos = new LatLng(lat,lon);
         MapStatus.Builder builder = new MapStatus.Builder();
         builder.target(centerpos).zoom(19.0f);
         mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
