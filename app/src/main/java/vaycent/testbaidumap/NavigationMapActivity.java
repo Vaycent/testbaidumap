@@ -34,6 +34,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
 
     private BDLocation resultCallBackLocation = null;
     private String indoorId = "";
+    private ArrayList<String> floors;
     private PoiSearch navigationPoiSearch;
 
     private NavigationMapActivityBinding mBinding;
@@ -43,6 +44,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
     private String lastTab;
     private NavigationItemAdapter poiItemAdapter;
     private List<PoiIndoorInfo> poiInfosList;
+    private String searchType,searchFloor;
 
 
     @Override
@@ -119,6 +121,12 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
             resultCallBackLocation = fromIntent.getParcelableExtra("callbackLocation");
         if (null != fromIntent && null != fromIntent.getStringExtra("indoorId"))
             indoorId = fromIntent.getStringExtra("indoorId");
+        if (null != fromIntent && null != fromIntent.getStringArrayListExtra("floors")){
+            floors = fromIntent.getStringArrayListExtra("floors");
+            floors = floorsFormat(floors);
+        }
+        searchType = "餐饮";
+        searchFloor = "全部楼层";
 
         navigationPoiSearch = navigationPoiSearch.newInstance();
         navigationPoiSearch.setOnGetPoiSearchResultListener(this);
@@ -141,7 +149,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
             @Override
             public void afterTextChanged(Editable editable) {
                 if(!includeSearchBinding.includeIndoorSearchEtSearchtext.getText().toString().trim().equals("")){
-                    indoorNearBySearch(1,includeSearchBinding.includeIndoorSearchEtSearchtext.getText().toString().trim());
+                    indoorNearBySearch(1,includeSearchBinding.includeIndoorSearchEtSearchtext.getText().toString().trim(),searchFloor);
                     lastTab = null;
                 }
             }
@@ -163,18 +171,17 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
         mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("值机口"));
         mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("登机口"));
         mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("到达口"));
-
         mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("出发厅"));
         mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("安全检查"));
         mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("候机厅"));
 
-        indoorNearBySearch(1, "餐饮");
         // 设置Tab的选择监听
         mBinding.activityNavigationmapTlContentTab.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 includeSearchBinding.includeIndoorSearchEtSearchtext.setText("");
-                indoorNearBySearch(1, tab.getText().toString());
+                searchType = tab.getText().toString();
+                indoorNearBySearch(1, searchType,searchFloor);
             }
 
             @Override
@@ -185,23 +192,56 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-        // 构造一个TabLayoutOnPageChangeListener对象
-        TabLayout.TabLayoutOnPageChangeListener listener =
-                new TabLayout.TabLayoutOnPageChangeListener(mBinding.activityNavigationmapTlContentTab);
+//        TabLayout.TabLayoutOnPageChangeListener listener =
+//                new TabLayout.TabLayoutOnPageChangeListener(mBinding.activityNavigationmapTlContentTab);
+
+
+        mBinding.activityNavigationmapTlFloorsTab.setTabGravity(TabLayout.GRAVITY_FILL);
+        mBinding.activityNavigationmapTlFloorsTab.setTabMode(TabLayout.MODE_SCROLLABLE);
+        for(String floor : floors){
+            mBinding.activityNavigationmapTlFloorsTab.addTab(mBinding.activityNavigationmapTlFloorsTab.newTab().setText(floor));
+        }
+        mBinding.activityNavigationmapTlFloorsTab.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                includeSearchBinding.includeIndoorSearchEtSearchtext.setText("");
+                searchFloor = tab.getText().toString();
+                indoorNearBySearch(1, searchType,searchFloor);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
+        indoorNearBySearch(1, searchType,searchFloor);
+
     }
 
-
-    private void indoorNearBySearch(int page, String keyword) {
+    private void indoorNearBySearch(int page, String keyword,String floor) {
         PoiIndoorOption option = new PoiIndoorOption();
         option.poiIndoorBid(indoorId);
         option.poiIndoorWd(keyword);
         option.poiPageSize(50);
+        if(null!=floor&&!"".equals(floor)&&!"全部楼层".equals(floor)){
+            option.poiFloor(floor);
+        }
 
         if (option == null) {
             Toast.makeText(NavigationMapActivity.this, "当前无室内POI无法搜索", Toast.LENGTH_LONG).show();
             return;
         }
         navigationPoiSearch.searchPoiIndoor(option);
+    }
+
+    private ArrayList<String> floorsFormat(ArrayList<String> floors){
+        ArrayList<String> resultFloors = floors;
+        resultFloors.add(0,"全部楼层");
+        return resultFloors;
     }
 
 

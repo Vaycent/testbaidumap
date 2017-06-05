@@ -6,8 +6,6 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-import vaycent.testbaidumap.SharedPreferencesUtil;
-
 /**
  * Created by vaycent on 2017/6/2.
  */

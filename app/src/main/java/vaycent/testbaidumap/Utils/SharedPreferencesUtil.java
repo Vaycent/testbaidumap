@@ -1,7 +1,9 @@
-package vaycent.testbaidumap;
+package vaycent.testbaidumap.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import vaycent.testbaidumap.ApplicationContext;
 
 /**
  * Created by vaycent on 2017/6/2.

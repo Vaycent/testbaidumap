@@ -7,9 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ZoomControls;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
@@ -378,16 +378,9 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     private void initMap(){
         mBaiduMap = mBinding.activityMainMvMap.getMap();
         mBaiduMap.setIndoorEnable(true); // 打开室内图
-        // 隐藏logo
-        View child = mBinding.activityMainMvMap.getChildAt(1);
-        if (child != null && (child instanceof ImageView || child instanceof ZoomControls)) {
-            child.setVisibility(View.INVISIBLE);
-        }
-        // 隐藏地图上比例尺
-        mBinding.activityMainMvMap.showScaleControl(false);
-//        mBinding.activityMainMvMap.getChildAt(2).setLayoutParams(new LinearLayout.LayoutParams(180,
-//                LinearLayout.LayoutParams.WRAP_CONTENT));
-        mBinding.activityMainMvMap.getChildAt(2).setPadding(0,0, StripItem.dip2px(this, 10),StripItem.dip2px(this, 250));//这是控制缩放控件的位置
+        mapUtilsHelper.isShowBaiDuLogo(mBinding.activityMainMvMap,false);
+        mapUtilsHelper.isShowMapScale(mBinding.activityMainMvMap,false);
+        mapUtilsHelper.setZoomWidgetPosition(mBinding.activityMainMvMap,0,0,StripItem.dip2px(this, 10),StripItem.dip2px(this, 250));
 
 
         mRoutePlanSearch = RoutePlanSearch.newInstance();
@@ -495,7 +488,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     public void onMessageEvent(LocationMsgEvent event) {
         if(null==event||null==event.getCallbackLocation())
             return;
-
+        mBinding.activityIndoorRlytBottomNavigation.setVisibility(View.GONE);
         if(btnResourceCode ==  mBinding.activityIndoorBtnNavigationmap.getId()){
             BDLocation callbackLocation = event.getCallbackLocation();
             MapBaseIndoorMapInfo indoorInfo = mBaiduMap.getFocusedBaseIndoorMapInfo();
@@ -505,9 +498,10 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             navigationIntent.setClass(InDoorActivity.this,NavigationMapActivity.class);
             navigationIntent.putExtra("callbackLocation",callbackLocation);
             navigationIntent.putExtra("indoorId",indoorId);
+            navigationIntent.putStringArrayListExtra("floors",mMapBaseIndoorMapInfo.getFloors());
             startActivity(navigationIntent);
         }else if(btnResourceCode == mBinding.activityIndoorBtnCurrentposition.getId()){
-            mapUtilsHelper.mapMoveTo(mLocationManager.getMapView().getMap(),event.getCallbackLocation().getLatitude(),event.getCallbackLocation().getLongitude());
+            mapUtilsHelper.mapMoveTo(mBaiduMap,event.getCallbackLocation().getLatitude(),event.getCallbackLocation().getLongitude());
         }else if(btnResourceCode == mBinding.activityIndoorBtnPath.getId()){
             BDLocation callbackLocation = event.getCallbackLocation();
             MapBaseIndoorMapInfo indoorInfo = mBaiduMap.getFocusedBaseIndoorMapInfo();
@@ -525,6 +519,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(RoutePlanMsgEvent event) {
         if(null!=event.getResultRoutePlan()){
+            mBinding.activityIndoorRlytBottomNavigation.setVisibility(View.GONE);
             ResultRoutePlan mResultRoutePlan = event.getResultRoutePlan();
             IndoorPlanNode startNode = new IndoorPlanNode(mResultRoutePlan.startLatLng, mResultRoutePlan.startFloor);
             IndoorPlanNode endNode = new IndoorPlanNode(mResultRoutePlan.endLatLng,mResultRoutePlan.endFloor);
@@ -535,7 +530,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(OnePoiMsgEvent event) {
-        if(null!=event.getPoiIndoorResult()){
+        if(null!=event.getPoiIndoorResult()&&null!=event.getCallBackLocation()){
             PoiIndoorResult mPoiIndoorResult = event.getPoiIndoorResult();
 
             if(mPoiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR){
@@ -545,9 +540,49 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
                 overlay.setData(mPoiIndoorResult);
                 overlay.addToMap();
                 overlay.zoomToSpan();
+
+                initBottomNavigation(mPoiIndoorResult,event.getCallBackLocation());
             }
         }
     }
+
+    private void initBottomNavigation(final PoiIndoorResult mPoiIndoorResult, final BDLocation mCallBackLocation){
+        View view = mBinding.activityIndoorIncludeBottomNavigation.getRootView();
+        TextView name = (TextView)view.findViewById(R.id.adapter_poiitem_tv_placename);
+        TextView floor = (TextView) view.findViewById(R.id.adapter_poiitem_tv_floor);
+        TextView distance = (TextView) view.findViewById(R.id.adapter_poiitem_tv_distance);
+        name.setText(mPoiIndoorResult.getmArrayPoiInfo().get(0).name);
+        floor.setText(mPoiIndoorResult.getmArrayPoiInfo().get(0).floor);
+        String distanceStr = getDistanceText(mCallBackLocation,mPoiIndoorResult.getmArrayPoiInfo().get(0));
+        distance.setText(distanceStr);
+        LinearLayout startNavigation = (LinearLayout)view.findViewById(R.id.adapter_poiitem_iv_startnavigationlayout);
+        startNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                planRouteInDoor(mCallBackLocation,mPoiIndoorResult.getmArrayPoiInfo().get(0));
+            }
+        });
+        mBinding.activityIndoorRlytBottomNavigation.setVisibility(View.VISIBLE);
+    }
+
+    private String getDistanceText(BDLocation mCallBackLocation,PoiIndoorInfo mPoiIndoorInfo){
+        LatLng currentLatLng = new LatLng(mCallBackLocation.getLatitude(),mCallBackLocation.getLongitude());
+        int distance = mapUtilsHelper.calculateDistance(currentLatLng,mPoiIndoorInfo.latLng);
+        return "离目的地距离"+distance+"米";
+    }
+
+    private void planRouteInDoor(BDLocation mCallBackLocation,PoiIndoorInfo mPoiIndoorInfo){
+        if(null!=mCallBackLocation){
+            LatLng startLatLng = new LatLng(mCallBackLocation.getLatitude(),mCallBackLocation.getLongitude());
+            String startFloor = mCallBackLocation.getFloor();
+            LatLng endLatLng = mPoiIndoorInfo.latLng;
+            String endFloor = mPoiIndoorInfo.floor;
+
+            ResultRoutePlan mResultRoutePlan = new ResultRoutePlan(startLatLng,startFloor,endLatLng,endFloor);
+            EventBus.getDefault().post(new RoutePlanMsgEvent(mResultRoutePlan));
+        }
+    }
+
 
 
 

@@ -117,7 +117,7 @@ public class NavigationItemAdapter extends RecyclerView.Adapter<NavigationItemAd
         mPoiIndoorResult.setPoiNum(1);
         mPoiIndoorResult.setmArrayPoiInfo(mListPoiIndoorInfo);
 //        activity.returnResultOnePoi(mPoiIndoorResult);
-        EventBus.getDefault().post(new OnePoiMsgEvent(mPoiIndoorResult));
+        EventBus.getDefault().post(new OnePoiMsgEvent(mPoiIndoorResult,resultCallBackLocation));
         backToInDoorActivity();
     }
 

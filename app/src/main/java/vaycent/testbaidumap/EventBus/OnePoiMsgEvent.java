@@ -1,5 +1,6 @@
 package vaycent.testbaidumap.EventBus;
 
+import com.baidu.location.BDLocation;
 import com.baidu.mapapi.search.poi.PoiIndoorResult;
 
 /**
@@ -8,12 +9,19 @@ import com.baidu.mapapi.search.poi.PoiIndoorResult;
 
 public class OnePoiMsgEvent {
     private PoiIndoorResult mPoiIndoorResult;
+    private BDLocation mCallBackLocation;
 
-    public OnePoiMsgEvent(PoiIndoorResult mPoiIndoorResult){
+    public OnePoiMsgEvent(PoiIndoorResult mPoiIndoorResult,BDLocation resultCallBackLocation){
         this.mPoiIndoorResult = mPoiIndoorResult;
+        this.mCallBackLocation = resultCallBackLocation;
     }
 
     public PoiIndoorResult getPoiIndoorResult(){
         return mPoiIndoorResult;
     }
+
+    public BDLocation getCallBackLocation(){
+        return mCallBackLocation;
+    }
+
 }
