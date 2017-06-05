@@ -6,7 +6,7 @@ import com.baidu.mapapi.model.LatLng;
  * Created by vaycent on 2017/6/1.
  */
 
-public class ResultPoiSearch {
+public class ResultPoiSearch{
     public String name;
     public LatLng latlng;
     public String floor;

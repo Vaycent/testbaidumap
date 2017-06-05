@@ -11,6 +11,16 @@ import com.baidu.mapapi.SDKInitializer;
 
 public class ApplicationContext extends Application {
 
+    private static ApplicationContext application;
+
+    public ApplicationContext() {
+        application = this;
+    }
+
+    public static ApplicationContext getApplication() {
+        return application;
+    }
+
     @Override
     public void onCreate(){
         super.onCreate();

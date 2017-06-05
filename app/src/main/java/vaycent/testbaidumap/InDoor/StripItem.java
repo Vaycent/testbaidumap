@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -22,7 +23,7 @@ public class StripItem extends FrameLayout {
     }
 
     private TextView mText;
-    private static final int ITEM_HEIGHT = 30;//dp
+    private static final int ITEM_HEIGHT = 45;//dp
     private static final int ITEM_PADDING = 20;
     public static final int colorSelected = Color.argb(255,16, 169, 236 ); //190, 190, 190
     public static final int color = Color.argb(255, 255, 255, 255);//155,211, 211, 211
@@ -72,6 +73,7 @@ public class StripItem extends FrameLayout {
      */
     public void setText(CharSequence text) {
         mText.setText(text);
+        Log.e("Vaycent","mText.color:"+mText.getTextColors());
     }
 
     public static int dip2px(Context context, float dp) {

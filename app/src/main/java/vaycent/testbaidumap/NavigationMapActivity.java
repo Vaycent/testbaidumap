@@ -3,11 +3,12 @@ package vaycent.testbaidumap;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.RadioGroup;
+import android.view.View;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -22,7 +23,10 @@ import com.baidu.mapapi.search.poi.PoiSearch;
 import java.util.ArrayList;
 import java.util.List;
 
+import vaycent.testbaidumap.Utils.NoMultiClickListener;
+import vaycent.testbaidumap.databinding.IncludeSearchBinding;
 import vaycent.testbaidumap.databinding.NavigationMapActivityBinding;
+import vaycent.testbaidumap.widget.DividerItemDecoration;
 import vaycent.testbaidumap.widget.NavigationItemAdapter;
 
 
@@ -33,6 +37,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
     private PoiSearch navigationPoiSearch;
 
     private NavigationMapActivityBinding mBinding;
+    private IncludeSearchBinding includeSearchBinding;
 
     private String currentTab;
     private String lastTab;
@@ -44,6 +49,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_navigation_map);
+        includeSearchBinding = DataBindingUtil.getBinding(mBinding.activityNavigationmapIncludeSearch.getRoot());
 
         initData();
 
@@ -97,6 +103,9 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
 
             poiItemAdapter = new NavigationItemAdapter(this,poiInfosList,resultCallBackLocation);
             mBinding.activityNavigationmapRvCommonflightlistview.setAdapter(poiItemAdapter);
+
+            mBinding.activityNavigationmapRvCommonflightlistview.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL_LIST));
             poiItemAdapter.notifyDataSetChanged();
         }
     }
@@ -116,10 +125,9 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
     }
 
     private void initLayout() {
+        initTabLayout();
 
-        changeTabMode();
-
-        mBinding.activityNavigationmapEtSearchtext.addTextChangedListener(new TextWatcher() {
+        includeSearchBinding.includeIndoorSearchEtSearchtext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -132,50 +140,62 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(!mBinding.activityNavigationmapEtSearchtext.getText().toString().trim().equals("")){
-                    indoorNearBySearch(1,mBinding.activityNavigationmapEtSearchtext.getText().toString().trim());
-                    mBinding.activityNavigationmapRdContentTab.clearCheck();
+                if(!includeSearchBinding.includeIndoorSearchEtSearchtext.getText().toString().trim().equals("")){
+                    indoorNearBySearch(1,includeSearchBinding.includeIndoorSearchEtSearchtext.getText().toString().trim());
                     lastTab = null;
                 }
             }
         });
-    }
 
-    private void changeTabMode() {
-        mBinding.activityNavigationmapRdContentTab.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        includeSearchBinding.includeIndoorSearchRlytBack.setOnClickListener(new NoMultiClickListener() {
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                lastTab = currentTab;
-                switch (i) {
-                    case R.id.activity_navigationmap_rbtn_contentfirst:
-                        currentTab = "餐饮";
-                        break;
-                    case R.id.activity_navigationmap_rbtn_contentsecond:
-                        currentTab = "值机口";
-                        break;
-                    case R.id.activity_navigationmap_rbtn_contentthird:
-                        currentTab = "登机口";
-                        break;
-                    case R.id.activity_navigationmap_rbtn_contentfourth:
-                        currentTab = "到达口";
-                        break;
-                    case R.id.activity_navigationmap_rbtn_contentfifth:
-                        currentTab = "出发厅";
-                        break;
-                }
-
-                if (currentTab != lastTab) {
-                    mBinding.activityNavigationmapEtSearchtext.setText("");
-                    indoorNearBySearch(1, currentTab);
-                }
+            protected void onNoMultiClick(View v) {
+                onBackPressed();
             }
         });
+
     }
+
+    private void initTabLayout(){
+        mBinding.activityNavigationmapTlContentTab.setTabGravity(TabLayout.GRAVITY_FILL);
+        mBinding.activityNavigationmapTlContentTab.setTabMode(TabLayout.MODE_SCROLLABLE);
+        mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("餐饮"));
+        mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("值机口"));
+        mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("登机口"));
+        mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("到达口"));
+
+        mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("出发厅"));
+        mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("安全检查"));
+        mBinding.activityNavigationmapTlContentTab.addTab(mBinding.activityNavigationmapTlContentTab.newTab().setText("候机厅"));
+
+        indoorNearBySearch(1, "餐饮");
+        // 设置Tab的选择监听
+        mBinding.activityNavigationmapTlContentTab.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                includeSearchBinding.includeIndoorSearchEtSearchtext.setText("");
+                indoorNearBySearch(1, tab.getText().toString());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+        // 构造一个TabLayoutOnPageChangeListener对象
+        TabLayout.TabLayoutOnPageChangeListener listener =
+                new TabLayout.TabLayoutOnPageChangeListener(mBinding.activityNavigationmapTlContentTab);
+    }
+
 
     private void indoorNearBySearch(int page, String keyword) {
         PoiIndoorOption option = new PoiIndoorOption();
         option.poiIndoorBid(indoorId);
         option.poiIndoorWd(keyword);
+        option.poiPageSize(50);
 
         if (option == null) {
             Toast.makeText(NavigationMapActivity.this, "当前无室内POI无法搜索", Toast.LENGTH_LONG).show();

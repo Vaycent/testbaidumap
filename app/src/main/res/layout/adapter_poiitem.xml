@@ -4,51 +4,71 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/adapter_poiitem_clyt_itemlayout"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp">
+    android:layout_height="60dp">
 
 
-
-    <Button
-        android:id="@+id/adapter_poiitem_iv_startnavigation"
-        android:layout_width="50dp"
+    <LinearLayout
+        android:id="@+id/adapter_poiitem_iv_startnavigationlayout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/start_navigation_icon"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/adapter_poiitem_iv_startnavigation"
+            android:layout_width="18dp"
+            android:layout_height="20dp"
+            android:background="@drawable/btn_indoor_startnavigation"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="到这去"
+            android:textSize="10dp"
+            android:textColor="@color/MAIN_TEXT_LIGHT_COLOR"/>
+
+    </LinearLayout>
+
+
 
     <TextView
         android:id="@+id/adapter_poiitem_tv_placename"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/adapter_poiitem_iv_startnavigation"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/MAIN_TEXT_COLOR"
+        android:textSize="16dp"
         app:layout_constraintBottom_toTopOf="@+id/adapter_poiitem_tv_distance"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/adapter_poiitem_iv_startnavigationlayout"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
     <TextView
         android:id="@+id/adapter_poiitem_tv_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adapter_poiitem_tv_placename"
         android:ellipsize="end"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:textColor="@color/MAIN_TEXT_LIGHT_COLOR"
+        android:textSize="13dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adapter_poiitem_tv_placename"/>
 
 
     <TextView
-        android:layout_marginLeft="20dp"
         android:id="@+id/adapter_poiitem_tv_floor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#10A9EC"
-        app:layout_constraintLeft_toRightOf="@+id/adapter_poiitem_tv_distance"
-        app:layout_constraintTop_toBottomOf="@+id/adapter_poiitem_tv_placename"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:textColor="@color/MAIN"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginStart="20dp"/>
+        app:layout_constraintLeft_toRightOf="@+id/adapter_poiitem_tv_distance"
+        app:layout_constraintTop_toBottomOf="@+id/adapter_poiitem_tv_placename"/>
 
 
 </android.support.constraint.ConstraintLayout>

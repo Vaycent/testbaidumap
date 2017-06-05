@@ -22,6 +22,7 @@ import com.baidu.mapapi.search.poi.PoiSearch;
 import java.util.ArrayList;
 import java.util.List;
 
+import vaycent.testbaidumap.Utils.HistroySharePreference;
 import vaycent.testbaidumap.Utils.NoMultiClickListener;
 import vaycent.testbaidumap.databinding.PoiInDoorSearchActivityBinding;
 import vaycent.testbaidumap.widget.PoiSearchAdapter;
@@ -140,6 +141,9 @@ public class PoiInDoorSearchActivity extends AppCompatActivity implements OnGetP
     }
 
     public void returnPoiIndoorInfo(PoiIndoorInfo mPoiIndoorInfo){
+        HistroySharePreference mHistroySharePreference = new HistroySharePreference();
+        mHistroySharePreference.save(mBinding.activityNavigationmapEtSearchtext.getText().toString().trim());
+
         Intent fromIntent = getIntent();
         int requestCode = fromIntent.getIntExtra("requestcode",0);
         fromIntent.putExtra("placeName", mPoiIndoorInfo.name);

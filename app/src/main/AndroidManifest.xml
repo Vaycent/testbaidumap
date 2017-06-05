@@ -32,7 +32,7 @@
         <activity
             android:name=".InDoorActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="Vaycent Test"
+            android:theme="@style/Theme_FlightStatus_Main"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -57,18 +57,21 @@
         <activity
             android:name=".NavigationMapActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="Vaycent Test"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme_FlightStatus_Main" />
         <activity
             android:name=".PathPlanActivity"
             android:label="Vaycent Test"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme_FlightStatus_Main"/>
         <activity
             android:name=".PoiInDoorSearchActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="Vaycent Test"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme_FlightStatus_Main"/>
         <activity android:name=".MultiPoiMapActivity">
+
         </activity>
     </application>
 

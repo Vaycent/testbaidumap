@@ -8,6 +8,11 @@
     <color name="WHITE">#FFFFFFFF</color>
     <color name="FILTER_RESTBUTTON_SELECT">#DEDEDE</color>
     <color name="FILTER_RESTBUTTON_SELECTED">#10A9EC</color>
-    <color name="MAIN">#FF10A9EC</color>
+    <color name="MAIN">#FF008ACB</color>
+    <color name="transparent">#00000000</color>
+    <color name="MAIN_TEXT_COLOR">#FF00234E</color>
+    <color name="MAIN_TEXT_LIGHT_COLOR">#FF798691</color>
+    <color name="INDOOR_BG_COLOR_GREY">#FFEDF2F5</color>
+
 
 </resources>

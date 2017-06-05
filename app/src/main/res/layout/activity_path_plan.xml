@@ -7,69 +7,131 @@
     <data class="PathPlanActivityBinding">
 
         <variable
-            name="startPoiSearch"
-            type="vaycent.testbaidumap.Objects.ResultPoiSearch"/>
+            name="model"
+            type="vaycent.testbaidumap.PathPlanViewModel"/>/>
 
-        <variable
-            name="endPoiSearch"
-            type="vaycent.testbaidumap.Objects.ResultPoiSearch"/>
+        <!--<variable-->
+        <!--name="startPoiSearch"-->
+        <!--type="vaycent.testbaidumap.Objects.ResultPoiSearch"/>-->
+
+        <!--<variable-->
+        <!--name="endPoiSearch"-->
+        <!--type="vaycent.testbaidumap.Objects.ResultPoiSearch"/>-->
 
     </data>
 
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <EditText
-            android:id="@+id/activity_path_plan_ed_start"
-            android:focusable="false"
-            android:text="@{startPoiSearch.name}"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginRight="20dp"
-            android:padding="5dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/activity_path_plan_btn_change"
-            android:layout_marginEnd="20dp"
-            tools:layout_editor_absoluteY="81dp"/>
-
-        <EditText
-            android:id="@+id/activity_path_plan_ed_end"
-            android:focusable="false"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
-            android:padding="5dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/activity_path_plan_btn_change"
-            app:layout_constraintTop_toBottomOf="@+id/activity_path_plan_ed_start"
-            android:text="@{endPoiSearch.name}"
-            android:layout_marginEnd="20dp"/>
-
-        <Button
-            android:id="@+id/activity_path_plan_btn_change"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/change_position_icon"
-            app:layout_constraintBottom_toBottomOf="@+id/activity_path_plan_ed_end"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/activity_path_plan_ed_start"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/WHITE">
 
 
-        <Button
-            android:id="@+id/activity_path_plan_btn_search"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:text="搜索"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_path_plan_ed_end"/>
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/activity_path_plan_ablyt_appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/MAIN"
+            app:elevation="0dp">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/transparent"
+                app:elevation="0dp"
+                app:navigationIcon="@drawable/ic_indoor_back"
+                app:theme="@style/Base.ThemeOverlay.AppCompat.Dark">
+
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.AppBarLayout>
 
 
-    </android.support.constraint.ConstraintLayout>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/activity_path_plan_tv_start"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/button_grey_radius_stroke"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="@{model.startName.get()}"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/activity_path_plan_btn_change"
+                />
+
+            <TextView
+                android:id="@+id/activity_path_plan_tv_end"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_grey_radius_stroke"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="@{model.endName.get()}"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/activity_path_plan_btn_change"
+                app:layout_constraintTop_toBottomOf="@+id/activity_path_plan_tv_start"/>
+            <!--android:text="@{model.endPosition.}"-->
+
+            <Button
+                android:id="@+id/activity_path_plan_btn_change"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="38dp"
+                android:background="@drawable/btn_indoor_switchposition"
+                app:layout_constraintBottom_toBottomOf="@+id/activity_path_plan_tv_end"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/activity_path_plan_tv_start"/>
+
+
+            <Button
+                android:id="@+id/activity_path_plan_btn_search"
+                android:layout_width="130dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/public_button_radius_purplish_red"
+                android:text="搜索"
+                android:textColor="@color/WHITE"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_path_plan_tv_end"/>
+
+            <ImageView
+                android:id="@+id/activity_path_plan_iv_splitline"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="17dp"
+                android:background="@color/INDOOR_BG_COLOR_GREY"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_path_plan_btn_search"/>
+
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/activity_path_plan_rv_histroylist"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#CCFFFFFF"
+            android:cacheColorHint="#00000000"
+            android:fadingEdge="none"
+            android:scrollbars="none"/>
+
+    </LinearLayout>
+
 
 </layout>

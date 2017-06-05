@@ -61,7 +61,7 @@ public class IndoorPoiOverlay extends OverlayManager {
             Bundle bundle = new Bundle();
             bundle.putInt("index", i);
             markerList.add(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.point_marker)).extraInfo(bundle)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_indoor_pointmarker)).extraInfo(bundle)
                     .position(mIndoorPoiResult.getmArrayPoiInfo().get(i).latLng));
 
 //            BitmapDescriptorFactory.fromAssetWithDpi("Icon_mark"

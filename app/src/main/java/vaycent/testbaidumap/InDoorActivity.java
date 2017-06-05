@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
@@ -50,6 +49,7 @@ import vaycent.testbaidumap.EventBus.RoutePlanMsgEvent;
 import vaycent.testbaidumap.InDoor.BaseStripAdapter;
 import vaycent.testbaidumap.InDoor.IndoorRouteOverlay;
 import vaycent.testbaidumap.InDoor.MyLocationListener;
+import vaycent.testbaidumap.InDoor.StripItem;
 import vaycent.testbaidumap.InDoor.StripListView;
 import vaycent.testbaidumap.Location.LocationManager;
 import vaycent.testbaidumap.Objects.ResultRoutePlan;
@@ -183,19 +183,19 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     /* 缩放等级到室内时触发 */
     @Override
     public void onBaseIndoorMapMode(boolean b, MapBaseIndoorMapInfo mapBaseIndoorMapInfo) {
-        if (b) {
-            stripListView.setVisibility(View.VISIBLE);
-            mBinding.activityIndoorBtnNavigationmap.setVisibility(View.VISIBLE);
-            if (mapBaseIndoorMapInfo == null) {
-                return;
-            }
-            mFloorListAdapter.setmFloorList(mapBaseIndoorMapInfo.getFloors());
-            stripListView.setStripAdapter(mFloorListAdapter);
-        } else {
-            stripListView.setVisibility(View.GONE);
-            mBinding.activityIndoorBtnNavigationmap.setVisibility(View.GONE);
-        }
-        mMapBaseIndoorMapInfo = mapBaseIndoorMapInfo;
+//        if (b) {
+//            stripListView.setVisibility(View.VISIBLE);
+//            mBinding.activityIndoorBtnNavigationmap.setVisibility(View.VISIBLE);
+//            if (mapBaseIndoorMapInfo == null) {
+//                return;
+//            }
+//            mFloorListAdapter.setmFloorList(mapBaseIndoorMapInfo.getFloors());
+//            stripListView.setStripAdapter(mFloorListAdapter);
+//        } else {
+//            stripListView.setVisibility(View.GONE);
+//            mBinding.activityIndoorBtnNavigationmap.setVisibility(View.GONE);
+//        }
+//        mMapBaseIndoorMapInfo = mapBaseIndoorMapInfo;
     }
 
     /* 获取Poi结果 */
@@ -369,6 +369,10 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
                 mFloorListAdapter.notifyDataSetInvalidated();
             }
         });
+//        View headView = LayoutInflater.from(this).inflate(R.layout.adapter_striplistview_headlayout, null);
+//        View footView = LayoutInflater.from(this).inflate(R.layout.adapter_striplistview_footlayout, null);
+//        stripListView.addHeaderView(headView);
+//        stripListView.addFooterView(footView );
     }
 
     private void initMap(){
@@ -381,9 +385,9 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         }
         // 隐藏地图上比例尺
         mBinding.activityMainMvMap.showScaleControl(false);
-        mBinding.activityMainMvMap.getChildAt(2).setLayoutParams(new LinearLayout.LayoutParams(180,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        mBinding.activityMainMvMap.getChildAt(2).setPadding(0,0,50,800);//这是控制缩放控件的位置
+//        mBinding.activityMainMvMap.getChildAt(2).setLayoutParams(new LinearLayout.LayoutParams(180,
+//                LinearLayout.LayoutParams.WRAP_CONTENT));
+        mBinding.activityMainMvMap.getChildAt(2).setPadding(0,0, StripItem.dip2px(this, 10),StripItem.dip2px(this, 250));//这是控制缩放控件的位置
 
 
         mRoutePlanSearch = RoutePlanSearch.newInstance();
@@ -535,6 +539,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             PoiIndoorResult mPoiIndoorResult = event.getPoiIndoorResult();
 
             if(mPoiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR){
+                mBaiduMap.clear();
                 IndoorPoiOverlay overlay = new MyIndoorPoiOverlay(mBaiduMap);
                 mBaiduMap.setOnMarkerClickListener(overlay);
                 overlay.setData(mPoiIndoorResult);

@@ -105,7 +105,7 @@ public class IndoorRouteOverlay extends OverlayManager {
         if (mRouteLine.getStarting() != null) {
             overlayList.add((new MarkerOptions()).position(mRouteLine.getStarting().getLocation())
                     .icon(getStartMarker() != null ? getStartMarker() :
-                            BitmapDescriptorFactory.fromResource(R.drawable.pathline_start_icon))
+                            BitmapDescriptorFactory.fromResource(R.drawable.ic_indoor_startmarker))
                     .zIndex(10));
             //BitmapDescriptorFactory.fromAssetWithDpi("Icon_start.png")
 
@@ -114,7 +114,7 @@ public class IndoorRouteOverlay extends OverlayManager {
         if (mRouteLine.getTerminal() != null) {
             overlayList.add((new MarkerOptions()).position(mRouteLine.getTerminal().getLocation())
                     .icon(getTerminalMarker() != null ? getTerminalMarker() :
-                            BitmapDescriptorFactory.fromResource(R.drawable.pathline_end_icon))
+                            BitmapDescriptorFactory.fromResource(R.drawable.ic_indoor_endmarker))
                     .zIndex(10));
             //BitmapDescriptorFactory.fromAssetWithDpi("Icon_end.png")
         }

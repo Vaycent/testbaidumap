@@ -16,7 +16,13 @@
         android:layout_height="match_parent">
 
 
+        <include
+            android:id="@+id/activity_indoor_include_airportchoose"
+            layout="@layout/include_indoor_airportchoose"/>
+
+
         <com.baidu.mapapi.map.MapView
+            android:layout_below="@+id/activity_indoor_include_airportchoose"
             android:id="@+id/activity_main_mv_map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -59,31 +65,33 @@
 
             <Button
                 android:id="@+id/activity_indoor_btn_navigationmap"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_above="@+id/activity_indoor_btn_currentposition"
-                android:layout_margin="10dp"
-                android:background="@drawable/navigation_map_icon"
+                android:layout_marginLeft="17dp"
+                android:layout_marginBottom="11dp"
+                android:background="@drawable/btn_indoor_navigation"
                 android:visibility="invisible"/>
 
             <Button
                 android:id="@+id/activity_indoor_btn_currentposition"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_above="@+id/activity_indoor_llyt_pathmsglayout"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/get_location_icon"/>
+                android:layout_marginLeft="17dp"
+                android:background="@drawable/btn_indoor_getlocation"/>
 
 
             <Button
                 android:id="@+id/activity_indoor_btn_path"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
                 android:layout_above="@+id/activity_indoor_llyt_pathmsglayout"
                 android:layout_alignParentRight="true"
-                android:layout_margin="10dp"
-                android:background="@drawable/path_plan_icon"
-                android:visibility="invisible"/>
+                android:layout_marginRight="17dp"
+                android:background="@drawable/btn_indoor_pathplan"
+                android:visibility="invisible"
+                android:layout_marginBottom="28dp"/>
 
 
             <LinearLayout
@@ -101,7 +109,7 @@
                     android:id="@+id/activity_indoor_btn_prepath"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/left_step_icon"
+                    android:background="@drawable/btn_indoor_leftstep"
                     android:onClick="nodeClick"/>
 
                 <TextView
@@ -116,7 +124,7 @@
                     android:id="@+id/activity_indoor_btn_nextpath"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/right_step_icon"
+                    android:background="@drawable/btn_indoor_rightstep"
                     android:onClick="nodeClick"/>
             </LinearLayout>
 
