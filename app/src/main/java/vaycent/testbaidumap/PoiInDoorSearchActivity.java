@@ -8,9 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Toast;
 
-import com.baidu.location.BDLocation;
 import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
 import com.baidu.mapapi.search.poi.PoiDetailResult;
 import com.baidu.mapapi.search.poi.PoiIndoorInfo;
@@ -22,6 +20,8 @@ import com.baidu.mapapi.search.poi.PoiSearch;
 import java.util.ArrayList;
 import java.util.List;
 
+import vaycent.testbaidumap.Objects.Indoor;
+import vaycent.testbaidumap.Utils.AlertUtils;
 import vaycent.testbaidumap.Utils.HistroySharePreference;
 import vaycent.testbaidumap.Utils.NoMultiClickListener;
 import vaycent.testbaidumap.databinding.PoiInDoorSearchActivityBinding;
@@ -34,12 +34,14 @@ import vaycent.testbaidumap.widget.PoiSearchAdapter;
 public class PoiInDoorSearchActivity extends AppCompatActivity implements OnGetPoiSearchResultListener {
 
     private PoiInDoorSearchActivityBinding mBinding;
-    private BDLocation resultCallBackLocation = null;
-    private String indoorId = "";
     private PoiSearch navigationPoiSearch;
 
     private PoiSearchAdapter poiItemAdapter;
     private List<PoiIndoorInfo> poiInfosList;
+
+    private AlertUtils mAlertUtils = new AlertUtils(this);
+
+    private Indoor mIndoorData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +66,9 @@ public class PoiInDoorSearchActivity extends AppCompatActivity implements OnGetP
 
     @Override
     public void onGetPoiIndoorResult(PoiIndoorResult poiIndoorResult) {
-        if (poiIndoorResult == null || poiIndoorResult.error == PoiIndoorResult.ERRORNO.RESULT_NOT_FOUND) {
-            Toast.makeText(PoiInDoorSearchActivity.this, "无室内搜索结果", Toast.LENGTH_LONG).show();
+        if (mAlertUtils.getPoiIndoorAlert(poiIndoorResult)) {
             return;
-        }
-
-        if (poiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR) {
+        }else{
             if(null == poiInfosList)
                 poiInfosList= new ArrayList<PoiIndoorInfo>();
 
@@ -77,7 +76,7 @@ public class PoiInDoorSearchActivity extends AppCompatActivity implements OnGetP
             poiInfosList.clear();
             poiInfosList.addAll(poiIndoorResult.getmArrayPoiInfo());//每个点的超详细信息
 
-            poiItemAdapter = new PoiSearchAdapter(this,poiInfosList,resultCallBackLocation);
+            poiItemAdapter = new PoiSearchAdapter(this,poiInfosList,mIndoorData.getCurrentLocation());
             mBinding.activityPoiIndoorSearchRvMapinfolist.setAdapter(poiItemAdapter);
             poiItemAdapter.notifyDataSetChanged();
         }
@@ -91,10 +90,9 @@ public class PoiInDoorSearchActivity extends AppCompatActivity implements OnGetP
 
     private void initData(){
         Intent fromIntent = getIntent();
-        if (null != fromIntent && null != fromIntent.getParcelableExtra("callbackLocation"))
-            resultCallBackLocation = fromIntent.getParcelableExtra("callbackLocation");
-        if (null != fromIntent && null != fromIntent.getStringExtra("indoorId"))
-            indoorId = fromIntent.getStringExtra("indoorId");
+        if (null != fromIntent && null != fromIntent.getParcelableExtra(Indoor.KEY_NAME))
+            mIndoorData = (Indoor)fromIntent.getParcelableExtra(Indoor.KEY_NAME);
+
 
         navigationPoiSearch = navigationPoiSearch.newInstance();
         navigationPoiSearch.setOnGetPoiSearchResultListener(this);
@@ -123,6 +121,7 @@ public class PoiInDoorSearchActivity extends AppCompatActivity implements OnGetP
             protected void onNoMultiClick(View v) {
                 Intent multipoimapIntent = new Intent();
                 multipoimapIntent.setClass(PoiInDoorSearchActivity.this,MultiPoiMapActivity.class);
+                multipoimapIntent.putExtra("keyWord",mBinding.activityNavigationmapEtSearchtext.getText().toString());
                 startActivity(multipoimapIntent);
             }
         });
@@ -130,11 +129,11 @@ public class PoiInDoorSearchActivity extends AppCompatActivity implements OnGetP
 
     private void indoorNearBySearch(int page, String keyword) {
         PoiIndoorOption option = new PoiIndoorOption();
-        option.poiIndoorBid(indoorId);
+        option.poiIndoorBid(mIndoorData.getIndoorMapId());
         option.poiIndoorWd(keyword);
 
         if (option == null) {
-            Toast.makeText(PoiInDoorSearchActivity.this, "当前无室内POI无法搜索", Toast.LENGTH_LONG).show();
+            mAlertUtils.incorrectPoiIndoorOption();
             return;
         }
         navigationPoiSearch.searchPoiIndoor(option);
@@ -151,5 +150,16 @@ public class PoiInDoorSearchActivity extends AppCompatActivity implements OnGetP
         fromIntent.putExtra("placeFloor", mPoiIndoorInfo.floor);
         this.setResult(requestCode, fromIntent);
         this.finish();
+    }
+
+    private void setupHistroyData(){
+//        mBinding.activityPathPlanRvHistroylist.setLayoutManager(new LinearLayoutManager(this));
+//        HistroySharePreference mHistroySharePreference = new HistroySharePreference();
+//        List<String> mKeyWords = mHistroySharePreference.read();
+//        mPathHistroyAdapter = new PathHistroyAdapter(this,mKeyWords);
+//        mBinding.activityPathPlanRvHistroylist.setAdapter(mPathHistroyAdapter);
+//        mBinding.activityPathPlanRvHistroylist.addItemDecoration(new DividerItemDecoration(this,
+//                DividerItemDecoration.VERTICAL_LIST));
+//        mPathHistroyAdapter.notifyDataSetChanged();
     }
 }

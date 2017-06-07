@@ -13,6 +13,6 @@
     <color name="MAIN_TEXT_COLOR">#FF00234E</color>
     <color name="MAIN_TEXT_LIGHT_COLOR">#FF798691</color>
     <color name="INDOOR_BG_COLOR_GREY">#FFEDF2F5</color>
-
+    <color name="BG_LINE_LIGHT_GREY">#FFD1D9E0</color>
 
 </resources>

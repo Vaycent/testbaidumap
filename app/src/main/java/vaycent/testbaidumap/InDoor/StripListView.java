@@ -10,10 +10,11 @@ import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+
+import vaycent.testbaidumap.Utils.MapUtils;
 
 /**
  * 楼层条View
@@ -77,10 +78,10 @@ public class StripListView extends ListView {
                 return 0;
             }
         });
-        layoutParam = new RelativeLayout.LayoutParams(StripItem.dip2px(context, 45), StripItem.dip2px(context, 45));//iewGroup.LayoutParams.WRAP_CONTENT
+        layoutParam = new RelativeLayout.LayoutParams(MapUtils.dip2px(context, 45), MapUtils.dip2px(context, 45));//iewGroup.LayoutParams.WRAP_CONTENT
         layoutParam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         layoutParam.addRule(RelativeLayout.CENTER_IN_PARENT);
-        layoutParam.setMargins(StripItem.dip2px(context, 17), 0, 0, 0);
+        layoutParam.setMargins(MapUtils.dip2px(context, 17), 0, 0, 0);
         setLayoutParams(layoutParam);
     }
 }

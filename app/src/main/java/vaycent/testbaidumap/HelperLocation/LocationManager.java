@@ -1,4 +1,4 @@
-package vaycent.testbaidumap.Location;
+package vaycent.testbaidumap.HelperLocation;
 
 import android.content.Context;
 
@@ -16,7 +16,7 @@ import com.baidu.mapapi.map.MapView;
 public class LocationManager implements BaiduMap.OnBaseIndoorMapListener {
 
     private LocationClient mLocationClient;//定位SDK的核心类
-    private LocationManagerClientListener mMyLocationListener;//自定义监听类
+    private LocationManagerListener mMyLocationListener;//自定义监听类
     private MapView locationManagerMapView;
 
     private BDLocation resultLocation;
@@ -77,7 +77,7 @@ public class LocationManager implements BaiduMap.OnBaseIndoorMapListener {
         if(null==mLocationClient)
             mLocationClient = new LocationClient(context.getApplicationContext());
         if(null==mMyLocationListener)
-            mMyLocationListener = new LocationManagerClientListener(this);
+            mMyLocationListener = new LocationManagerListener(this);
         mLocationClient.registerLocationListener(mMyLocationListener);
 
         InitLocation();//初始化

@@ -4,23 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
-import com.baidu.location.BDLocation;
 import com.baidu.mapapi.model.LatLng;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.List;
-
 import vaycent.testbaidumap.EventBus.RoutePlanMsgEvent;
+import vaycent.testbaidumap.Objects.Indoor;
 import vaycent.testbaidumap.Objects.ResultRoutePlan;
-import vaycent.testbaidumap.Utils.HistroySharePreference;
 import vaycent.testbaidumap.Utils.NoMultiClickListener;
 import vaycent.testbaidumap.databinding.PathPlanActivityBinding;
-import vaycent.testbaidumap.widget.DividerItemDecoration;
-import vaycent.testbaidumap.widget.PathHistroyAdapter;
 
 
 /**
@@ -32,13 +26,11 @@ public class PathPlanActivity extends Activity{
     private PathPlanActivityBinding mBinding;
     private PathPlanViewModel viewModel;
 
-    private BDLocation callbackLocation = null;
-    private String indoorId = "";
+    private Indoor mIndoorData;
 
     private final int START_POI_REQUESTCODE = 0;
     private final int END_POI_REQUESTCODE = 1;
 
-    private PathHistroyAdapter mPathHistroyAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,10 +76,8 @@ public class PathPlanActivity extends Activity{
 
     private void initData(){
         Intent fromIntent = getIntent();
-        if (null != fromIntent && null != fromIntent.getParcelableExtra("callbackLocation"))
-            callbackLocation = fromIntent.getParcelableExtra("callbackLocation");
-        if (null != fromIntent && null != fromIntent.getStringExtra("indoorId"))
-            indoorId = fromIntent.getStringExtra("indoorId");
+        if (null != fromIntent && null != fromIntent.getParcelableExtra(Indoor.KEY_NAME))
+            mIndoorData = (Indoor)fromIntent.getParcelableExtra(Indoor.KEY_NAME);
     }
 
     private void initLayout(){
@@ -117,14 +107,14 @@ public class PathPlanActivity extends Activity{
             }
         });
 
-        setupHistroyData();
+//        setupHistroyData();
     }
 
     private PathPlanViewModel buildViewModel(){
         viewModel = new PathPlanViewModel();
         viewModel.startName.set("我的位置");
-        viewModel.startLatLng.set(new LatLng(callbackLocation.getLatitude(),callbackLocation.getLongitude()));
-        viewModel.startFloor.set(callbackLocation.getFloor());
+        viewModel.startLatLng.set(new LatLng(mIndoorData.getCurrentLocation().getLatitude(),mIndoorData.getCurrentLocation().getLongitude()));
+        viewModel.startFloor.set(mIndoorData.getCurrentLocation().getFloor());
 
         viewModel.endName.set("");
         viewModel.endLatLng.set(null);
@@ -147,8 +137,7 @@ public class PathPlanActivity extends Activity{
     private void jumpToPoiInDoorSearchActivity(int requestCode){
         Intent startIntent = new Intent();
         startIntent.setClass(PathPlanActivity.this,PoiInDoorSearchActivity.class);
-        startIntent.putExtra("callbackLocation",callbackLocation);
-        startIntent.putExtra("indoorId",indoorId);
+        startIntent.putExtra("indoorData",mIndoorData);
         startIntent.putExtra("requestcode",requestCode);
         startActivityForResult(startIntent,requestCode);
     }
@@ -165,15 +154,6 @@ public class PathPlanActivity extends Activity{
         this.startActivity(indoorIntent);
     }
 
-    private void setupHistroyData(){
-        mBinding.activityPathPlanRvHistroylist.setLayoutManager(new LinearLayoutManager(this));
-        HistroySharePreference mHistroySharePreference = new HistroySharePreference();
-        List<String> mKeyWords = mHistroySharePreference.read();
-        mPathHistroyAdapter = new PathHistroyAdapter(this,mKeyWords);
-        mBinding.activityPathPlanRvHistroylist.setAdapter(mPathHistroyAdapter);
-        mBinding.activityPathPlanRvHistroylist.addItemDecoration(new DividerItemDecoration(this,
-                DividerItemDecoration.VERTICAL_LIST));
-        mPathHistroyAdapter.notifyDataSetChanged();
-    }
+
 
 }

@@ -9,12 +9,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
-import com.baidu.location.LocationClient;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapBaseIndoorMapInfo;
+import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.PoiInfo;
@@ -41,23 +40,18 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.List;
-
 import vaycent.testbaidumap.EventBus.LocationMsgEvent;
 import vaycent.testbaidumap.EventBus.OnePoiMsgEvent;
 import vaycent.testbaidumap.EventBus.RoutePlanMsgEvent;
+import vaycent.testbaidumap.HelperLocation.LocationManager;
 import vaycent.testbaidumap.InDoor.BaseStripAdapter;
-import vaycent.testbaidumap.InDoor.IndoorRouteOverlay;
-import vaycent.testbaidumap.InDoor.MyLocationListener;
-import vaycent.testbaidumap.InDoor.StripItem;
 import vaycent.testbaidumap.InDoor.StripListView;
-import vaycent.testbaidumap.Location.LocationManager;
+import vaycent.testbaidumap.Objects.Indoor;
 import vaycent.testbaidumap.Objects.ResultRoutePlan;
-import vaycent.testbaidumap.Poi.IndoorPoiOverlay;
+import vaycent.testbaidumap.Utils.AlertUtils;
 import vaycent.testbaidumap.Utils.MapUtils;
 import vaycent.testbaidumap.Utils.NoMultiClickListener;
 import vaycent.testbaidumap.databinding.InDoorActivityBinding;
-import vaycent.testbaidumap.widget.NavigationItemAdapter;
 
 
 public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanResultListener,OnGetPoiSearchResultListener,
@@ -72,23 +66,18 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     private final double testLat = StaticValMapHelper.testLat;
     private final double testLon = StaticValMapHelper.testLon;
     private MapUtils mapUtilsHelper = new MapUtils();
+    private AlertUtils mAlertUtils = new AlertUtils(this);
 
     private int nodeIndex = -1;
     private MapBaseIndoorMapInfo mMapBaseIndoorMapInfo = null;
     private StripListView stripListView;
     private BaseStripAdapter mFloorListAdapter;
 
-    private String currentTab;
-    private String lastTab;
-    private NavigationItemAdapter poiItemAdapter;
-    private List<PoiIndoorInfo> poiInfosList;
     private int btnResourceCode=0;
 
-    //用于定位
-    public LocationClient mLocationClient;//定位SDK的核心类
-    public MyLocationListener mMyLocationListener;//自定义监听类
-
     private InDoorActivityBinding mBinding;
+
+    private Indoor mIndoorData;
 
 
     @Override
@@ -121,8 +110,6 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     @Override
     protected void onStop(){
         super.onStop();
-        if(null!=mLocationClient&&mLocationClient.isStarted())
-            mLocationClient.stop();
     }
     @Override
     protected void onDestroy() {
@@ -159,19 +146,13 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     /* 获取室内路线 */
     @Override
     public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
-
-
-        if (indoorRouteResult.error == SearchResult.ERRORNO.NO_ERROR) {
-            mBaiduMap.clear();
-            IndoorRouteOverlay overlay = new IndoorRouteOverlay(mBaiduMap);
+        if(mAlertUtils.routePlanAlert(indoorRouteResult)){
+            return;
+        }else{
+            mapUtilsHelper.drawIndoorRoutePlan(mBaiduMap,indoorRouteResult);
             mIndoorRouteline = indoorRouteResult.getRouteLines().get(0);
             nodeIndex = -1;
             mBinding.activityIndoorLlytPathmsglayout.setVisibility(View.VISIBLE);
-            overlay.setData(indoorRouteResult.getRouteLines().get(0));
-            overlay.addToMap();
-            overlay.zoomToSpan();
-        }else{
-            Toast.makeText(this,"室内路线规划失败["+indoorRouteResult.error.toString()+"]",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -202,8 +183,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     @Override
     public void onGetPoiResult(PoiResult poiResult) {
         // 获取POI检索结果
-        if (poiResult == null || poiResult.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {// 没有找到检索结果
-            Toast.makeText(InDoorActivity.this, "未找到结果",Toast.LENGTH_LONG).show();
+        if (mAlertUtils.getPoiAlert(poiResult)) {
             return;
         }
 
@@ -240,63 +220,11 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     @Override
     public void onGetPoiIndoorResult(PoiIndoorResult poiIndoorResult) {
         mBaiduMap.clear();
-        if (poiIndoorResult == null  || poiIndoorResult.error == PoiIndoorResult.ERRORNO.RESULT_NOT_FOUND) {
-            Toast.makeText(InDoorActivity.this, "无结果" , Toast.LENGTH_LONG).show();
+        if (mAlertUtils.getPoiIndoorAlert(poiIndoorResult)) {
             return;
+        }else{
+            mapUtilsHelper.drawIndoorMultiPoi(mBaiduMap,this,poiIndoorResult);
         }
-
-        Log.e("Vaycent","result.getmArrayPoiInfo().size:"+poiIndoorResult.getmArrayPoiInfo().size());
-        for(int i=0;i<poiIndoorResult.getmArrayPoiInfo().size();i++){
-            Log.e("Vaycent","name:"+poiIndoorResult.getmArrayPoiInfo().get(i).name);
-        }
-
-        if (poiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR) {
-            IndoorPoiOverlay overlay = new MyIndoorPoiOverlay(mBaiduMap);
-            mBaiduMap.setOnMarkerClickListener(overlay);
-            overlay.setData(poiIndoorResult);
-            overlay.addToMap();
-            overlay.zoomToSpan();
-
-
-//            if(null == poiInfosList)
-//                poiInfosList= new ArrayList<PoiIndoorInfo>();
-//
-//            poiListView.setLayoutManager(new LinearLayoutManager(this));
-//            poiInfosList.clear();
-//            poiInfosList.addAll(poiIndoorResult.getmArrayPoiInfo());//每个点的超详细信息
-//
-//            poiItemAdapter = new PoiItemAdapter(this,mMapView,poiInfosList,mRoutePlanSearch);
-//            poiListView.setAdapter(poiItemAdapter);
-//            poiItemAdapter.notifyDataSetChanged();
-        }
-    }
-
-    /* Poi的Overlay事件 */
-    private class MyIndoorPoiOverlay extends IndoorPoiOverlay {
-
-        /**
-         * 构造函数
-         *
-         * @param baiduMap 该 IndoorPoiOverlay 引用的 BaiduMap 对象
-         */
-        public MyIndoorPoiOverlay(BaiduMap baiduMap) {
-            super(baiduMap);
-        }
-
-        @Override
-        /**
-         * 响应点击室内POI点事件
-         * @param i
-         *            被点击的poi在
-         *            {@link com.baidu.mapapi.search.poi.PoiIndoorResult#getmArrayPoiInfo()} } 中的索引
-         * @return
-         */
-        public boolean onPoiClick(int i) {
-            PoiIndoorInfo info =  getIndoorPoiResult().getmArrayPoiInfo().get(i);
-            Toast.makeText(InDoorActivity.this, info.name + ",在" + info.floor + "层,坐标:"+info.latLng.latitude+","+info.latLng.longitude, Toast.LENGTH_LONG).show();
-            return false;
-        }
-
     }
 
 
@@ -316,17 +244,6 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             @Override
             public void onNoMultiClick(View v) {
             //跳转
-            }
-        });
-
-        mBinding.activityIndoorBtnInhoursestart.setOnClickListener(new NoMultiClickListener() {
-            @Override
-            public void onNoMultiClick(View v) {
-//                测试西单大悦城
-                IndoorPlanNode startNode = new IndoorPlanNode(new LatLng(39.917380 ,116.37978), "F2");//39.917380,
-                IndoorPlanNode endNode = new IndoorPlanNode(new LatLng(39.917239, 116.37955), "F6");
-                IndoorRoutePlanOption irpo = new IndoorRoutePlanOption().from(startNode).to(endNode);
-                mRoutePlanSearch.walkingIndoorSearch(irpo);
             }
         });
 
@@ -380,7 +297,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         mBaiduMap.setIndoorEnable(true); // 打开室内图
         mapUtilsHelper.isShowBaiDuLogo(mBinding.activityMainMvMap,false);
         mapUtilsHelper.isShowMapScale(mBinding.activityMainMvMap,false);
-        mapUtilsHelper.setZoomWidgetPosition(mBinding.activityMainMvMap,0,0,StripItem.dip2px(this, 10),StripItem.dip2px(this, 250));
+        mapUtilsHelper.setZoomWidgetPosition(mBinding.activityMainMvMap,0,0,MapUtils.dip2px(this, 10),MapUtils.dip2px(this, 250));
 
 
         mRoutePlanSearch = RoutePlanSearch.newInstance();
@@ -406,7 +323,21 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
                 mMapBaseIndoorMapInfo = mapBaseIndoorMapInfo;
             }
         });
+
+        mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+            }
+            @Override
+            public boolean onMapPoiClick(MapPoi mapPoi) {
+                mapUtilsHelper.drawMarkerWithLatLng(mBaiduMap,mapPoi.getPosition());
+                return false;
+            }
+        });
+
         mapUtilsHelper.mapMoveTo(mBaiduMap,testLat,testLon );
+
+
     }
 
     /**
@@ -466,7 +397,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 //        mFloorListAdapter.setSelectedPostion();
             mFloorListAdapter.notifyDataSetInvalidated();
         }else{
-            Toast.makeText(InDoorActivity.this,"请打开室内图或将室内图移入屏幕内",Toast.LENGTH_SHORT).show();
+            mAlertUtils.notIndoorModeAlert();
         }
 
         //控制显示隐藏
@@ -488,18 +419,19 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     public void onMessageEvent(LocationMsgEvent event) {
         if(null==event||null==event.getCallbackLocation())
             return;
+
+
+        mIndoorData = new Indoor(event.getCallbackLocation(),mMapBaseIndoorMapInfo.getID(),mMapBaseIndoorMapInfo.getFloors());
+
         mBinding.activityIndoorRlytBottomNavigation.setVisibility(View.GONE);
         if(btnResourceCode ==  mBinding.activityIndoorBtnNavigationmap.getId()){
-            BDLocation callbackLocation = event.getCallbackLocation();
-            MapBaseIndoorMapInfo indoorInfo = mBaiduMap.getFocusedBaseIndoorMapInfo();
-            String indoorId = indoorInfo!=null?indoorInfo.getID():"";
-
             Intent navigationIntent = new Intent();
             navigationIntent.setClass(InDoorActivity.this,NavigationMapActivity.class);
-            navigationIntent.putExtra("callbackLocation",callbackLocation);
-            navigationIntent.putExtra("indoorId",indoorId);
-            navigationIntent.putStringArrayListExtra("floors",mMapBaseIndoorMapInfo.getFloors());
+            Bundle mBundle = new Bundle();
+            mBundle.putParcelable(Indoor.KEY_NAME, mIndoorData);
+            navigationIntent.putExtras(mBundle);
             startActivity(navigationIntent);
+
         }else if(btnResourceCode == mBinding.activityIndoorBtnCurrentposition.getId()){
             mapUtilsHelper.mapMoveTo(mBaiduMap,event.getCallbackLocation().getLatitude(),event.getCallbackLocation().getLongitude());
         }else if(btnResourceCode == mBinding.activityIndoorBtnPath.getId()){
@@ -509,8 +441,9 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
             Intent pathIntent = new Intent();
             pathIntent.setClass(InDoorActivity.this,PathPlanActivity.class);
-            pathIntent.putExtra("callbackLocation",callbackLocation);
-            pathIntent.putExtra("indoorId",indoorId);
+            Bundle mBundle = new Bundle();
+            mBundle.putParcelable(Indoor.KEY_NAME, mIndoorData);
+            pathIntent.putExtras(mBundle);
             startActivity(pathIntent);
         }
         btnResourceCode=0;
@@ -534,12 +467,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             PoiIndoorResult mPoiIndoorResult = event.getPoiIndoorResult();
 
             if(mPoiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR){
-                mBaiduMap.clear();
-                IndoorPoiOverlay overlay = new MyIndoorPoiOverlay(mBaiduMap);
-                mBaiduMap.setOnMarkerClickListener(overlay);
-                overlay.setData(mPoiIndoorResult);
-                overlay.addToMap();
-                overlay.zoomToSpan();
+                mapUtilsHelper.drawIndoorMultiPoi(mBaiduMap,this,mPoiIndoorResult);
 
                 initBottomNavigation(mPoiIndoorResult,event.getCallBackLocation());
             }

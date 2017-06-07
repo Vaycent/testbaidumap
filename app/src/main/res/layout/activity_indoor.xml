@@ -59,16 +59,6 @@
 
 
                 <Button
-                    android:id="@+id/activity_indoor_btn_inhoursestart"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_above="@+id/activity_indoor_btn_navigationmap"
-                    android:layout_marginLeft="10dp"
-                    android:background="#ffffff"
-                    android:text="@string/SW0001"
-                    android:visibility="gone"/>
-
-                <Button
                     android:id="@+id/activity_indoor_btn_navigationmap"
                     android:layout_width="45dp"
                     android:layout_height="45dp"

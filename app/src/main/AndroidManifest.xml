@@ -32,20 +32,14 @@
         <activity
             android:name=".InDoorActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:theme="@style/Theme_FlightStatus_Main"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme_FlightStatus_Main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".PathSearchActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="Vaycent Test"
-            android:screenOrientation="portrait">
         </activity>
 
         <service
@@ -58,7 +52,7 @@
             android:name=".NavigationMapActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme_FlightStatus_Main" />
+            android:theme="@style/Theme_FlightStatus_Main"/>
         <activity
             android:name=".PathPlanActivity"
             android:label="Vaycent Test"
@@ -67,11 +61,12 @@
         <activity
             android:name=".PoiInDoorSearchActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="Vaycent Test"
             android:screenOrientation="portrait"
             android:theme="@style/Theme_FlightStatus_Main"/>
-        <activity android:name=".MultiPoiMapActivity">
-
+        <activity android:name=".MultiPoiMapActivity"/>
+        <activity android:name=".HotsPoiActivity"
+                  android:theme="@style/Theme_FlightStatus_Main"
+                  android:screenOrientation="portrait">
         </activity>
     </application>
 

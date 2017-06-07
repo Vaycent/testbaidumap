@@ -13,26 +13,49 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="#cfffffff"
-            android:orientation="horizontal">
+            android:layout_height="33dp"
+            android:layout_marginTop="19dp">
 
-            <EditText
-                android:id="@+id/activity_navigationmap_et_searchtext"
+            <LinearLayout
+                android:id="@+id/activity_poi_indoor_search_llyt_searchlayout"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="30dp"
                 android:layout_weight="1"
-                android:hint="室内搜索"
-                android:maxLines="1"
-                android:padding="5dp"/>
+                android:background="@drawable/button_grey_radius_stroke"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="11dp"
+                    android:background="@drawable/ic_indoor_search"/>
+
+                <EditText
+                    android:id="@+id/activity_poi_indoor_search_et_searchtext"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="支持在室内搜索"
+                    android:gravity="center_vertical"/>
+
+
+            </LinearLayout>
+
 
             <Button
                 android:id="@+id/activity_poi_indoor_search_btn_startsearch"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:text="搜索"/>
+                android:layout_width="55dp"
+                android:layout_height="33dp"
+                android:text="搜索"
+                android:textColor="@color/WHITE"
+                android:background="@drawable/public_button_radius_purplish_red"/>
 
         </LinearLayout>
+
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/activity_poi_indoor_search_rv_mapinfolist"

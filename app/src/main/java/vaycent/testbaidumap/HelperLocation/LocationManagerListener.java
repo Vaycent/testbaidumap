@@ -1,4 +1,4 @@
-package vaycent.testbaidumap.Location;
+package vaycent.testbaidumap.HelperLocation;
 
 import android.util.Log;
 
@@ -16,26 +16,16 @@ import vaycent.testbaidumap.EventBus.LocationMsgEvent;
  * Created by vaycent on 2017/5/24.
  */
 
-public class LocationManagerClientListener implements BDLocationListener {
-
-//    private MapView mMapView;
-//    private BaiduMap listenerBaiduMap;
-//    private BDLocation resultLocation;
-//    private LocationClient mLocationClient;
+public class LocationManagerListener implements BDLocationListener {
 
     private LocationManager mLocationManager;
 
-    public LocationManagerClientListener(LocationManager mLocationManager){
-//        this.mMapView = mMapView;
-//        this.listenerBaiduMap = mMapView.getMap();
-//        this.mLocationClient = mLocationClient;
+    public LocationManagerListener(LocationManager mLocationManager){
         this.mLocationManager = mLocationManager;
     }
 
     @Override
     public void onReceiveLocation(BDLocation callbackLocation) {
-
-//        resultLocation = location;
 
         //获取定位结果
         StringBuffer sb = new StringBuffer(256);
@@ -162,7 +152,4 @@ public class LocationManagerClientListener implements BDLocationListener {
 
     }
 
-//    public BDLocation getResultLocation(){
-//        return this.resultLocation;
-//    }
 }

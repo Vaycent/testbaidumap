@@ -120,16 +120,6 @@
 
         </android.support.constraint.ConstraintLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/activity_path_plan_rv_histroylist"
-            android:layout_marginLeft="18dp"
-            android:layout_marginRight="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#CCFFFFFF"
-            android:cacheColorHint="#00000000"
-            android:fadingEdge="none"
-            android:scrollbars="none"/>
 
     </LinearLayout>
 

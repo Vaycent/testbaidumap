@@ -7,11 +7,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import static vaycent.testbaidumap.Utils.MapUtils.dip2px;
 
 /**
  * 设置楼层条每个Item 布局
@@ -73,13 +74,8 @@ public class StripItem extends FrameLayout {
      */
     public void setText(CharSequence text) {
         mText.setText(text);
-        Log.e("Vaycent","mText.color:"+mText.getTextColors());
     }
 
-    public static int dip2px(Context context, float dp) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dp * scale + 0.5f);
-    }
 
 
 }
