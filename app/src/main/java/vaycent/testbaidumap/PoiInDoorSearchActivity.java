@@ -109,6 +109,9 @@ public class PoiInDoorSearchActivity extends AppCompatActivity implements OnGetP
 
         navigationPoiSearch = navigationPoiSearch.newInstance();
         navigationPoiSearch.setOnGetPoiSearchResultListener(this);
+
+        if(requestCode != 0)
+            mBinding.activityPoiIndoorSearchLlytChooseonmap.setVisibility(View.VISIBLE);
     }
 
     private void initLayout(){
@@ -140,6 +143,17 @@ public class PoiInDoorSearchActivity extends AppCompatActivity implements OnGetP
                     multipoimapIntent.putExtra("requestCode",requestCode);
                     startActivity(multipoimapIntent);
                 }
+            }
+        });
+
+        mBinding.activityPoiIndoorSearchLlytChooseonmap.setOnClickListener(new NoMultiClickListener() {
+            @Override
+            protected void onNoMultiClick(View v) {
+                Intent chooseOnMapIntent = new Intent();
+                chooseOnMapIntent.setClass(PoiInDoorSearchActivity.this,ChooseOnMap.class);
+                chooseOnMapIntent.putExtra(mIndoorData.KEY_NAME,mIndoorData);
+                chooseOnMapIntent.putExtra("requestCode",requestCode);
+                startActivity(chooseOnMapIntent);
             }
         });
 

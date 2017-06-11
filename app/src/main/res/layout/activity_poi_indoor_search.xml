@@ -64,6 +64,28 @@
             android:layout_marginTop="18dp"
             android:background="@color/INDOOR_BG_COLOR_GREY"/>
 
+        <LinearLayout
+            android:id="@+id/activity_poi_indoor_search_llyt_chooseonmap"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="17dp"
+                android:background="@drawable/ic_indoor_pointmarker"/>
+            <TextView
+                android:layout_marginLeft="7dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17dp"
+                android:textColor="@color/MAIN"
+                android:text="地图选点"/>
+
+        </LinearLayout>
 
 
         <android.support.v7.widget.RecyclerView

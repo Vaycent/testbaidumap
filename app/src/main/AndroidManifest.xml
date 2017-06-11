@@ -65,9 +65,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme_FlightStatus_Main"/>
         <activity android:name=".MultiPoiMapActivity"/>
-        <activity android:name=".HotsPoiActivity"
-                  android:theme="@style/Theme_FlightStatus_Main"
-                  android:screenOrientation="portrait">
+        <activity
+            android:name=".HotsPoiActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme_FlightStatus_Main">
+        </activity>
+        <activity android:name=".ChooseOnMap">
         </activity>
     </application>
 
