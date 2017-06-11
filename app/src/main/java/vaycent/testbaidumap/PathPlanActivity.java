@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.poi.PoiIndoorInfo;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
+import vaycent.testbaidumap.EventBus.PathPlanResultMsgEvent;
 import vaycent.testbaidumap.EventBus.RoutePlanMsgEvent;
 import vaycent.testbaidumap.Objects.Indoor;
 import vaycent.testbaidumap.Objects.ResultRoutePlan;
@@ -28,8 +33,8 @@ public class PathPlanActivity extends Activity{
 
     private Indoor mIndoorData;
 
-    private final int START_POI_REQUESTCODE = 0;
-    private final int END_POI_REQUESTCODE = 1;
+    private final int START_POI_REQUESTCODE = 1;
+    private final int END_POI_REQUESTCODE = 2;
 
 
     @Override
@@ -38,6 +43,7 @@ public class PathPlanActivity extends Activity{
 //        binding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.activity_common_list, null, false);
 //        setContentPanelView(binding.getRoot());
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_path_plan);
+        EventBus.getDefault().register(this);
 
         initData();
 
@@ -48,31 +54,37 @@ public class PathPlanActivity extends Activity{
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if(null==data)
-            return;
-        String name = data.getStringExtra("placeName");
-        LatLng latlng = data.getParcelableExtra("placeLatLng");
-        String floor = data.getStringExtra("placeFloor");
-
-        switch (requestCode) {
-            case START_POI_REQUESTCODE:
-                viewModel.startName.set(name);
-                viewModel.startLatLng.set(latlng);
-                viewModel.startFloor.set(floor);
-                break;
-            case END_POI_REQUESTCODE:
-                viewModel.endName.set(name);
-                viewModel.endLatLng.set(latlng);
-                viewModel.endFloor.set(floor);
-                break;
-            default:
-                break;
-        }
-
-
+    public void onDestroy(){
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//
+//        if(null==data)
+//            return;
+//        String name = data.getStringExtra("placeName");
+//        LatLng latlng = data.getParcelableExtra("placeLatLng");
+//        String floor = data.getStringExtra("placeFloor");
+//
+//        switch (requestCode) {
+//            case START_POI_REQUESTCODE:
+//                viewModel.startName.set(name);
+//                viewModel.startLatLng.set(latlng);
+//                viewModel.startFloor.set(floor);
+//                break;
+//            case END_POI_REQUESTCODE:
+//                viewModel.endName.set(name);
+//                viewModel.endLatLng.set(latlng);
+//                viewModel.endFloor.set(floor);
+//                break;
+//            default:
+//                break;
+//        }
+//
+//
+//    }
 
     private void initData(){
         Intent fromIntent = getIntent();
@@ -137,13 +149,22 @@ public class PathPlanActivity extends Activity{
     private void jumpToPoiInDoorSearchActivity(int requestCode){
         Intent startIntent = new Intent();
         startIntent.setClass(PathPlanActivity.this,PoiInDoorSearchActivity.class);
-        startIntent.putExtra("indoorData",mIndoorData);
-        startIntent.putExtra("requestcode",requestCode);
-        startActivityForResult(startIntent,requestCode);
+        startIntent.putExtra(mIndoorData.KEY_NAME,mIndoorData);
+        startIntent.putExtra("requestCode",requestCode);
+        startActivity(startIntent);
     }
 
     private void planRouteInDoor(LatLng startLatLng,String startFloor,LatLng endLatLng,String endFloor){
-            ResultRoutePlan mResultRoutePlan = new ResultRoutePlan(startLatLng,startFloor,endLatLng,endFloor);
+        Log.e("Vaycent","startLatLng lat:"+startLatLng.latitude);
+        Log.e("Vaycent","startLatLng lon:"+startLatLng.longitude);
+        Log.e("Vaycent","startLatLng floor:"+startFloor);
+
+        Log.e("Vaycent","endLatLng lat:"+endLatLng.latitude);
+        Log.e("Vaycent","endLatLng lon:"+endLatLng.longitude);
+        Log.e("Vaycent","endLatLng floor:"+endFloor);
+
+
+        ResultRoutePlan mResultRoutePlan = new ResultRoutePlan(startLatLng,startFloor,endLatLng,endFloor);
             EventBus.getDefault().post(new RoutePlanMsgEvent(mResultRoutePlan));
             backToInDoorActivity();
     }
@@ -154,6 +175,27 @@ public class PathPlanActivity extends Activity{
         this.startActivity(indoorIntent);
     }
 
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(PathPlanResultMsgEvent event) {
+        if(null!=event.getPoiIndoorInfo()){
+            PoiIndoorInfo mPoiIndoorInfo = event.getPoiIndoorInfo();
+            int requestCode = event.getRequestCode();
 
+            switch (requestCode) {
+                case START_POI_REQUESTCODE:
+                    viewModel.startName.set(mPoiIndoorInfo.name);
+                    viewModel.startLatLng.set(mPoiIndoorInfo.latLng);
+                    viewModel.startFloor.set(mPoiIndoorInfo.floor);
+                    break;
+                case END_POI_REQUESTCODE:
+                    viewModel.endName.set(mPoiIndoorInfo.name);
+                    viewModel.endLatLng.set(mPoiIndoorInfo.latLng);
+                    viewModel.endFloor.set(mPoiIndoorInfo.floor);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 
 }

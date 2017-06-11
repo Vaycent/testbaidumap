@@ -72,15 +72,16 @@
 
 
         <HorizontalScrollView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none">
+            android:scrollbars="none"
+            android:background="@color/INDOOR_BG_COLOR_GREY">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:background="@color/INDOOR_BG_COLOR_GREY">
+                >
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/WHITE">
+    android:background="@color/WHITE"
+    android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/activity_path_plan_ablyt_appbar"
@@ -28,217 +28,137 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginLeft="17dp"
-        android:layout_marginRight="17dp"
-        >
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="33dp"
-            android:layout_marginTop="19dp">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="17dp"
+            android:orientation="vertical"
+            >
 
             <LinearLayout
-                android:id="@+id/activity_hots_poi_et_searchlayout"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="30dp"
-                android:layout_weight="1"
-                android:background="@drawable/button_grey_radius_stroke"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:layout_width="match_parent"
+                android:layout_height="33dp"
+                android:layout_marginTop="19dp">
 
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="11dp"
-                    android:background="@drawable/ic_indoor_search"/>
-
-                <TextView
-                    android:id="@+id/activity_hots_poi_tv_searchtext"
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
+                <LinearLayout
+                    android:id="@+id/activity_hots_poi_et_searchlayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@null"
-                    android:hint="支持在室内搜索"
-                    android:gravity="center_vertical"/>
+                    android:background="@drawable/button_grey_radius_stroke"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="11dp"
+                        android:background="@drawable/ic_indoor_search"/>
+
+                    <TextView
+                        android:id="@+id/activity_hots_poi_tv_searchtext"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="支持在室内搜索"/>
+
+
+                </LinearLayout>
 
             </LinearLayout>
 
+            <!--热门-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="热门"
+                android:textColor="@color/MAIN_TEXT_COLOR"
+                android:textSize="15dp"/>
 
-            <Button
-                android:id="@+id/activity_hots_poi_btn_search"
-                android:layout_width="55dp"
-                android:layout_height="33dp"
-                android:text="搜索"
-                android:textColor="@color/WHITE"
-                android:background="@drawable/public_button_radius_purplish_red"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1.5dp"
+                android:layout_marginTop="9dp"
+                android:background="@color/BG_LINE_LIGHT_GREY"/>
+
+            <LinearLayout
+                android:id="@+id/activity_hots_poi_llyt_hots"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
+            <!--服务-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="服务"
+                android:textColor="@color/MAIN_TEXT_COLOR"
+                android:textSize="15dp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1.5dp"
+                android:layout_marginTop="9dp"
+                android:background="@color/BG_LINE_LIGHT_GREY"/>
+
+            <LinearLayout
+                android:id="@+id/activity_hots_poi_llyt_service"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
+            <!--设施-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="设施"
+                android:textColor="@color/MAIN_TEXT_COLOR"
+                android:textSize="15dp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1.5dp"
+                android:layout_marginTop="9dp"
+                android:background="@color/BG_LINE_LIGHT_GREY"/>
+
+            <LinearLayout
+                android:id="@+id/activity_hots_poi_llyt_device"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/MAIN_TEXT_COLOR"
-            android:text="服务"
-            android:textSize="15dp"
-            android:layout_marginTop="30dp"/>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1.5dp"
-            android:layout_marginTop="9dp"
-            android:background="@color/BG_LINE_LIGHT_GREY"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="9dp">
-            <Button
-                android:id="@+id/activity_hots_poi_btn_service01"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="登机口"/>
-            <Button
-                android:id="@+id/activity_hots_poi_btn_service02"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="值机口"/>
-            <Button
-                android:id="@+id/activity_hots_poi_btn_service03"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="安全检查"/>
-            <Button
-                android:id="@+id/activity_hots_poi_btn_service04"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="候机厅"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/activity_hots_poi_btn_service05"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="出发厅"/>
-            <Button
-                android:id="@+id/activity_hots_poi_btn_service06"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="到达厅"/>
-            <Button
-                android:id="@+id/activity_hots_poi_btn_service07"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="行李服务"/>
-            <Button
-                android:id="@+id/activity_hots_poi_btn_service08"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="交通运输"/>
-
-        </LinearLayout>
+    </ScrollView>
 
 
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/MAIN_TEXT_COLOR"
-            android:text="设施"
-            android:textSize="15dp"
-            android:layout_marginTop="30dp"/>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1.5dp"
-            android:layout_marginTop="9dp"
-            android:background="@color/BG_LINE_LIGHT_GREY"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="9dp">
-            <Button
-                android:id="@+id/activity_hots_poi_btn_deveice01"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="ATM"/>
-            <Button
-                android:id="@+id/activity_hots_poi_btn_deveice02"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="卫生间"/>
-            <Button
-                android:id="@+id/activity_hots_poi_btn_deveice03"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="保险"/>
-            <Button
-                android:id="@+id/activity_hots_poi_btn_deveice04"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="停车场"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/activity_hots_poi_btn_deveice05"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="扶梯"/>
-            <Button
-                android:id="@+id/activity_hots_poi_btn_deveice06"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="出入口"/>
-            <Button
-                android:id="@+id/activity_hots_poi_btn_deveice07"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="问讯处"/>
-            <Button
-                android:id="@+id/activity_hots_poi_btn_deveice08"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="直梯"/>
-
-        </LinearLayout>
-
-
-
-    </LinearLayout>
 
 
 </LinearLayout>

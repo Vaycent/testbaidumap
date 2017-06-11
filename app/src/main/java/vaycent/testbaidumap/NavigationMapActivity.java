@@ -24,12 +24,13 @@ import java.util.List;
 
 import vaycent.testbaidumap.Objects.Indoor;
 import vaycent.testbaidumap.Utils.AlertUtils;
+import vaycent.testbaidumap.Utils.FormatUtils;
 import vaycent.testbaidumap.Utils.MapUtils;
 import vaycent.testbaidumap.Utils.NoMultiClickListener;
 import vaycent.testbaidumap.databinding.IncludeSearchBinding;
 import vaycent.testbaidumap.databinding.NavigationMapActivityBinding;
 import vaycent.testbaidumap.widget.DividerItemDecoration;
-import vaycent.testbaidumap.widget.NavigationItemAdapter;
+import vaycent.testbaidumap.Adapter.NavigationItemAdapter;
 
 
 public class NavigationMapActivity extends AppCompatActivity implements OnGetPoiSearchResultListener {
@@ -45,7 +46,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
     private String searchType,searchFloor;
 
     private AlertUtils mAlertUtils = new AlertUtils(this);
-
+    private FormatUtils mFormatUtils = new FormatUtils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +99,8 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
 
             mBinding.activityNavigationmapRvCommonflightlistview.setLayoutManager(new LinearLayoutManager(this));
             poiInfosList.clear();
-            poiInfosList.addAll(poiIndoorResult.getmArrayPoiInfo());//每个点的超详细信息
+            poiInfosList.addAll(poiIndoorResult.getmArrayPoiInfo());
+            poiInfosList = mFormatUtils.poiIndoorResultFormat(poiInfosList,searchFloor);
 
             poiItemAdapter = new NavigationItemAdapter(this,poiInfosList,mIndoorData.getCurrentLocation());
             mBinding.activityNavigationmapRvCommonflightlistview.setAdapter(poiItemAdapter);
@@ -116,10 +118,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
         Intent fromIntent = getIntent();
         if (null != fromIntent && null != fromIntent.getParcelableExtra(Indoor.KEY_NAME))
             mIndoorData = (Indoor)fromIntent.getParcelableExtra(Indoor.KEY_NAME);
-
-
-        floors = mIndoorData.getFloorsList();
-        floors = floorsFormat(floors);
+        floors = mFormatUtils.floorsFormat(mIndoorData.getFloorsList());
 
         searchType = "南航";
         searchFloor = "全部";
@@ -130,26 +129,6 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
 
     private void initLayout() {
         initTabLayout();
-
-//        includeSearchBinding.includeIndoorSearchEtSearchtext.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                if(!includeSearchBinding.includeIndoorSearchEtSearchtext.getText().toString().trim().equals("")){
-//                    indoorNearBySearch(1,includeSearchBinding.includeIndoorSearchEtSearchtext.getText().toString().trim(),searchFloor);
-//                    lastTab = null;
-//                }
-//            }
-//        });
 
         includeSearchBinding.includeIndoorSearchRlytBack.setOnClickListener(new NoMultiClickListener() {
             @Override
@@ -163,6 +142,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
             protected void onNoMultiClick(View v) {
                 Intent hotsPoiIntent = new Intent();
                 hotsPoiIntent.setClass(NavigationMapActivity.this,HotsPoiActivity.class);
+                hotsPoiIntent.putExtra(Indoor.KEY_NAME, mIndoorData);
                 startActivity(hotsPoiIntent);
             }
         });
@@ -221,7 +201,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
         mBinding.activityNavigationmapRgFloorsTab.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                RadioButton rb = (RadioButton) findViewById(checkedId);
+                RadioButton rb = (RadioButton)radioGroup.findViewById(checkedId);
                 searchFloor = rb.getText().toString();
                 indoorNearBySearch(1, searchType,searchFloor);
             }
@@ -250,11 +230,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
         navigationPoiSearch.searchPoiIndoor(option);
     }
 
-    private ArrayList<String> floorsFormat(ArrayList<String> floors){
-        ArrayList<String> resultFloors = floors;
-        resultFloors.add(0,"全部");
-        return resultFloors;
-    }
+
 
 
 }

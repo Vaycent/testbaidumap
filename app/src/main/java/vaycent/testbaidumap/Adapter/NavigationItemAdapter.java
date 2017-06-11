@@ -1,4 +1,4 @@
-package vaycent.testbaidumap.widget;
+package vaycent.testbaidumap.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
@@ -70,7 +70,7 @@ public class NavigationItemAdapter extends RecyclerView.Adapter<NavigationItemAd
                 searchOnePoiResult(position);
             }
         });
-        holder.startIconIv.setOnClickListener(new View.OnClickListener() {
+        holder.startNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 planRouteInDoor(position);
@@ -89,7 +89,7 @@ public class NavigationItemAdapter extends RecyclerView.Adapter<NavigationItemAd
     {
 
         TextView nameTv,distanceTv,floorTv;
-        Button startIconIv;
+        LinearLayout startNavigation;
         ConstraintLayout itemLayout;
 
         public MyViewHolder(View view)
@@ -99,7 +99,7 @@ public class NavigationItemAdapter extends RecyclerView.Adapter<NavigationItemAd
             nameTv = (TextView) view.findViewById(R.id.adapter_poiitem_tv_placename);
             distanceTv = (TextView) view.findViewById(R.id.adapter_poiitem_tv_distance);
             floorTv = (TextView)view.findViewById(R.id.adapter_poiitem_tv_floor);
-            startIconIv = (Button) view.findViewById(R.id.adapter_poiitem_iv_startnavigation);
+            startNavigation = (LinearLayout) view.findViewById(R.id.adapter_poiitem_llyt_startnavigationlayout);
         }
     }
 

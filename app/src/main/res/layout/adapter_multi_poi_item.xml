@@ -10,8 +10,9 @@
     android:layout_height="60dp">
 
 
+
     <LinearLayout
-        android:id="@+id/adapter_poiitem_llyt_startnavigationlayout"
+        android:id="@+id/adapter_multi_poi_llyt_startnavigationlayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -21,7 +22,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
-            android:id="@+id/adapter_poiitem_iv_startnavigation"
             android:layout_width="18dp"
             android:layout_height="20dp"
             android:background="@drawable/btn_indoor_startnavigation"
@@ -43,17 +43,16 @@
         android:layout_height="wrap_content"
         android:textColor="@color/MAIN_TEXT_COLOR"
         android:textSize="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/adapter_poiitem_tv_distance"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/adapter_poiitem_llyt_startnavigationlayout"
+        app:layout_constraintRight_toLeftOf ="@+id/adapter_multi_poi_llyt_startnavigationlayout"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="5dp"
         />
 
     <TextView
         android:id="@+id/adapter_poiitem_tv_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
         android:textColor="@color/MAIN_TEXT_LIGHT_COLOR"
         android:textSize="13dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -66,7 +65,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp"
         android:textColor="@color/MAIN"
         android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"

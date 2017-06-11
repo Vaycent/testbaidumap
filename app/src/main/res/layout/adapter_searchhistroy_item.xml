@@ -4,6 +4,7 @@
               android:layout_height="60dp"
               android:orientation="horizontal"
               android:gravity="center_vertical"
+              android:id="@+id/adapter_searchhistroy_itemlayout"
     >
 
     <ImageView

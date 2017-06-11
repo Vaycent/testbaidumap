@@ -40,21 +40,31 @@
 
 
                 <LinearLayout
+                    android:id="@+id/activity_indoor_llyt_searchlayout"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="#cfffffff"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="17dp"
+                    android:layout_marginRight="17dp"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:background="@drawable/button_grey_radius_stroke"
+                    android:gravity="center_vertical">
 
-                    <EditText
-                        android:id="@+id/activity_indoor_et_searchtext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="50dp"
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="11dp"
+                        android:background="@drawable/ic_indoor_search"/>
+
+                    <TextView
+                        android:gravity="center_vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
                         android:layout_weight="1"
+                        android:background="@null"
                         android:hint="支持在室内搜索"
-                        android:maxLines="1"
                         android:padding="5dp"/>
-
                 </LinearLayout>
 
 

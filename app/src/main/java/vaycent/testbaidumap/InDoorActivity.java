@@ -63,8 +63,6 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     private PoiSearch mPoiSearch;
     private LocationManager mLocationManager;
 
-    private final double testLat = StaticValMapHelper.testLat;
-    private final double testLon = StaticValMapHelper.testLon;
     private MapUtils mapUtilsHelper = new MapUtils();
     private AlertUtils mAlertUtils = new AlertUtils(this);
 
@@ -223,7 +221,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         if (mAlertUtils.getPoiIndoorAlert(poiIndoorResult)) {
             return;
         }else{
-            mapUtilsHelper.drawIndoorMultiPoi(mBaiduMap,this,poiIndoorResult);
+            mapUtilsHelper.drawIndoorOnePoi(mBaiduMap,this,poiIndoorResult);
         }
     }
 
@@ -240,10 +238,11 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         stripListView = new StripListView(this);
         mBinding.activityIndoorRlytRoot.addView(stripListView);
 
-        mBinding.activityIndoorEtSearchtext.setOnClickListener(new NoMultiClickListener() {
+        mBinding.activityIndoorLlytSearchlayout.setOnClickListener(new NoMultiClickListener() {
             @Override
             public void onNoMultiClick(View v) {
-            //跳转
+                mLocationManager.startLocationSearch();
+                btnResourceCode = mBinding.activityIndoorLlytSearchlayout.getId();
             }
         });
 
@@ -330,13 +329,18 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             }
             @Override
             public boolean onMapPoiClick(MapPoi mapPoi) {
-                mapUtilsHelper.drawMarkerWithLatLng(mBaiduMap,mapPoi.getPosition());
+//                暂时不处理
+//                mapUtilsHelper.drawMarkerWithLatLng(mBaiduMap,mapPoi.getPosition());
                 return false;
             }
         });
 
-        mapUtilsHelper.mapMoveTo(mBaiduMap,testLat,testLon );
-
+        mBaiduMap.setOnMapLoadedCallback(new BaiduMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                mapUtilsHelper.mapMoveTo(mBaiduMap,StaticValMapHelper.testLat,StaticValMapHelper.testLon );
+            }
+        });
 
     }
 
@@ -420,31 +424,28 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         if(null==event||null==event.getCallbackLocation())
             return;
 
-
-        mIndoorData = new Indoor(event.getCallbackLocation(),mMapBaseIndoorMapInfo.getID(),mMapBaseIndoorMapInfo.getFloors());
+        LatLng airportLatLng = new LatLng(StaticValMapHelper.testLat,StaticValMapHelper.testLon);
+        mIndoorData = new Indoor(event.getCallbackLocation(),mMapBaseIndoorMapInfo.getID(),mMapBaseIndoorMapInfo.getFloors(),airportLatLng);
 
         mBinding.activityIndoorRlytBottomNavigation.setVisibility(View.GONE);
         if(btnResourceCode ==  mBinding.activityIndoorBtnNavigationmap.getId()){
             Intent navigationIntent = new Intent();
             navigationIntent.setClass(InDoorActivity.this,NavigationMapActivity.class);
-            Bundle mBundle = new Bundle();
-            mBundle.putParcelable(Indoor.KEY_NAME, mIndoorData);
-            navigationIntent.putExtras(mBundle);
+            navigationIntent.putExtra(mIndoorData.KEY_NAME,mIndoorData);
             startActivity(navigationIntent);
 
         }else if(btnResourceCode == mBinding.activityIndoorBtnCurrentposition.getId()){
             mapUtilsHelper.mapMoveTo(mBaiduMap,event.getCallbackLocation().getLatitude(),event.getCallbackLocation().getLongitude());
         }else if(btnResourceCode == mBinding.activityIndoorBtnPath.getId()){
-            BDLocation callbackLocation = event.getCallbackLocation();
-            MapBaseIndoorMapInfo indoorInfo = mBaiduMap.getFocusedBaseIndoorMapInfo();
-            String indoorId = indoorInfo!=null?indoorInfo.getID():"";
-
             Intent pathIntent = new Intent();
             pathIntent.setClass(InDoorActivity.this,PathPlanActivity.class);
-            Bundle mBundle = new Bundle();
-            mBundle.putParcelable(Indoor.KEY_NAME, mIndoorData);
-            pathIntent.putExtras(mBundle);
+            pathIntent.putExtra(mIndoorData.KEY_NAME,mIndoorData);
             startActivity(pathIntent);
+        }else if(btnResourceCode == mBinding.activityIndoorLlytSearchlayout.getId()){
+            Intent hotsIntent = new Intent();
+            hotsIntent.setClass(InDoorActivity.this,HotsPoiActivity.class);
+            hotsIntent.putExtra(mIndoorData.KEY_NAME,mIndoorData);
+            startActivity(hotsIntent);
         }
         btnResourceCode=0;
     }
@@ -467,7 +468,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             PoiIndoorResult mPoiIndoorResult = event.getPoiIndoorResult();
 
             if(mPoiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR){
-                mapUtilsHelper.drawIndoorMultiPoi(mBaiduMap,this,mPoiIndoorResult);
+                mapUtilsHelper.drawIndoorOnePoi(mBaiduMap,this,mPoiIndoorResult);
 
                 initBottomNavigation(mPoiIndoorResult,event.getCallBackLocation());
             }
@@ -483,7 +484,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         floor.setText(mPoiIndoorResult.getmArrayPoiInfo().get(0).floor);
         String distanceStr = getDistanceText(mCallBackLocation,mPoiIndoorResult.getmArrayPoiInfo().get(0));
         distance.setText(distanceStr);
-        LinearLayout startNavigation = (LinearLayout)view.findViewById(R.id.adapter_poiitem_iv_startnavigationlayout);
+        LinearLayout startNavigation = (LinearLayout)view.findViewById(R.id.adapter_poiitem_llyt_startnavigationlayout);
         startNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

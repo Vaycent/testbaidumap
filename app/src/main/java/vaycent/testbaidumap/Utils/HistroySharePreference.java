@@ -15,11 +15,17 @@ public class HistroySharePreference {
     private final String POI_SEARCH_HISTROY="PoiSearchHistroy";
 
     public void save(String keyWord){
+        if(null==keyWord||"".equals(keyWord))
+            return;
         List<String> mKeyWords = read();
         if(mKeyWords.size()==20){
             mKeyWords.remove(mKeyWords.size()-1);
         }
-        mKeyWords.add(keyWord);
+        for(int i=0;i<mKeyWords.size();i++){
+            if(mKeyWords.get(i).equals(keyWord))
+                return;
+        }
+        mKeyWords.add(0,keyWord);
         Gson gson = new Gson();
         String gsonStr = gson.toJson(mKeyWords);
         SharedPreferencesUtil.getInstance().saveString(POI_SEARCH_HISTROY, gsonStr);
