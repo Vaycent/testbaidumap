@@ -120,25 +120,13 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
 
     @Override
-    public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
-
-    }
-
+    public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {}
     @Override
-    public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {
-
-    }
-
+    public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {}
     @Override
-    public void onGetMassTransitRouteResult(MassTransitRouteResult massTransitRouteResult) {
-
-    }
-
+    public void onGetMassTransitRouteResult(MassTransitRouteResult massTransitRouteResult) {}
     @Override
-    public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
-
-    }
-
+    public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {}
     /* 获取室内路线 */
     @Override
     public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
@@ -151,12 +139,10 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             mBinding.activityIndoorRlytBottomRouteplan.setVisibility(View.VISIBLE);
         }
     }
-
     @Override
     public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
 
     }
-
     /* 缩放等级到室内时触发 */
     @Override
     public void onBaseIndoorMapMode(boolean b, MapBaseIndoorMapInfo mapBaseIndoorMapInfo) {
@@ -174,7 +160,6 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 //        }
 //        mMapBaseIndoorMapInfo = mapBaseIndoorMapInfo;
     }
-
     /* 获取Poi结果 */
     @Override
     public void onGetPoiResult(PoiResult poiResult) {
@@ -206,12 +191,8 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             }
         }
     }
-
     @Override
-    public void onGetPoiDetailResult(PoiDetailResult poiDetailResult) {
-
-    }
-
+    public void onGetPoiDetailResult(PoiDetailResult poiDetailResult) {}
     /* 获取室内的Poi结果 */
     @Override
     public void onGetPoiIndoorResult(PoiIndoorResult poiIndoorResult) {
@@ -303,11 +284,16 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
                     mFloorsList.setVisibility(View.INVISIBLE);
                     mBinding.activityIndoorBtnNavigationmap.setVisibility(View.INVISIBLE);
                     mBinding.activityIndoorBtnPath.setVisibility(View.INVISIBLE);
+                    mBinding.activityIndoorBtnCurrentposition.setVisibility(View.INVISIBLE);
+                    mBinding.activityIndoorLlytSearchlayout.setVisibility(View.INVISIBLE);
                     return;
                 }
                 mFloorsList.setVisibility(View.VISIBLE);
                 mBinding.activityIndoorBtnNavigationmap.setVisibility(View.VISIBLE);
                 mBinding.activityIndoorBtnPath.setVisibility(View.VISIBLE);
+                mBinding.activityIndoorBtnCurrentposition.setVisibility(View.VISIBLE);
+                mBinding.activityIndoorLlytSearchlayout.setVisibility(View.VISIBLE);
+
                 mMapBaseIndoorMapInfo = mapBaseIndoorMapInfo;
 
                 initFloorsList();
@@ -335,11 +321,52 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
     }
 
-    /**
-     * 节点浏览示例
-     *
-     * @param v
-     */
+    private void initBottomNavigationigation(final PoiIndoorResult mPoiIndoorResult, final BDLocation mCallBackLocation){
+        View view = mBinding.activityIndoorIncludeBottomNavigation.getRootView();
+        TextView name = (TextView)view.findViewById(R.id.adapter_poiitem_tv_placename);
+        TextView floor = (TextView) view.findViewById(R.id.adapter_poiitem_tv_floor);
+        TextView distance = (TextView) view.findViewById(R.id.adapter_poiitem_tv_distance);
+        name.setText(mPoiIndoorResult.getmArrayPoiInfo().get(0).name);
+        floor.setText(mPoiIndoorResult.getmArrayPoiInfo().get(0).floor);
+        String distanceStr = getDistanceText(mCallBackLocation,mPoiIndoorResult.getmArrayPoiInfo().get(0));
+        distance.setText(distanceStr);
+        LinearLayout startNavigation = (LinearLayout)view.findViewById(R.id.adapter_poiitem_llyt_startnavigationlayout);
+        startNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                planRouteInDoor(mCallBackLocation,mPoiIndoorResult.getmArrayPoiInfo().get(0));
+                mBinding.activityIndoorRlytBottomNavigation.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private String getDistanceText(BDLocation mCallBackLocation,PoiIndoorInfo mPoiIndoorInfo){
+        LatLng currentLatLng = new LatLng(mCallBackLocation.getLatitude(),mCallBackLocation.getLongitude());
+        int distance = mapUtilsHelper.calculateDistance(currentLatLng,mPoiIndoorInfo.latLng);
+        return "离目的地距离"+distance+"米";
+    }
+
+    private void planRouteInDoor(BDLocation mCallBackLocation,PoiIndoorInfo mPoiIndoorInfo){
+        if(null!=mCallBackLocation){
+            LatLng startLatLng = new LatLng(mCallBackLocation.getLatitude(),mCallBackLocation.getLongitude());
+            String startFloor = mCallBackLocation.getFloor();
+            LatLng endLatLng = mPoiIndoorInfo.latLng;
+            String endFloor = mPoiIndoorInfo.floor;
+
+            ResultRoutePlan mResultRoutePlan = new ResultRoutePlan(startLatLng,startFloor,endLatLng,endFloor);
+            EventBus.getDefault().post(new RoutePlanMsgEvent(mResultRoutePlan));
+        }
+    }
+
+    private void initFloorsList(){
+        if(null == mFloorsListAdapter)
+            mFloorsListAdapter = new FloorsListAdapter(InDoorActivity.this,mMapBaseIndoorMapInfo.getFloors());
+        mFloorsList.getFloorsListView().setAdapter(mFloorsListAdapter);
+        mFloorsListAdapter.notifyDataSetInvalidated();
+
+
+    }
+
     public void nodeClick(View v) {
         if (mBaiduMap.isBaseIndoorMapMode()) {
             LatLng nodeLocation = null;
@@ -410,6 +437,12 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
 
 
+
+
+
+
+
+    /* 定位事件回调 */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(LocationMsgEvent event) {
         if(null==event||null==event.getCallbackLocation())
@@ -418,7 +451,6 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         LatLng airportLatLng = new LatLng(StaticValMapHelper.testLat,StaticValMapHelper.testLon);
         mIndoorData = new Indoor(event.getCallbackLocation(),mMapBaseIndoorMapInfo.getID(),mMapBaseIndoorMapInfo.getFloors(),airportLatLng);
 
-        mBinding.activityIndoorRlytBottomNavigation.setVisibility(View.GONE);
         if(btnResourceCode ==  mBinding.activityIndoorBtnNavigationmap.getId()){
             Intent navigationIntent = new Intent();
             navigationIntent.setClass(InDoorActivity.this,NavigationMapActivity.class);
@@ -440,9 +472,15 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             hotsIntent.putExtra(mIndoorData.KEY_NAME,mIndoorData);
             startActivity(hotsIntent);
         }
+
+        if(btnResourceCode != mBinding.activityIndoorBtnCurrentposition.getId()){
+            mBinding.activityIndoorRlytBottomNavigation.setVisibility(View.GONE);
+            mBinding.activityIndoorRlytBottomRouteplan.setVisibility(View.GONE);
+           mBaiduMap.clear();
+        }
         btnResourceCode=0;
     }
-
+    /* 路线事件回调 */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(RoutePlanMsgEvent event) {
         if(null!=event.getResultRoutePlan()){
@@ -451,12 +489,9 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             IndoorPlanNode endNode = new IndoorPlanNode(mResultRoutePlan.endLatLng,mResultRoutePlan.endFloor);
             IndoorRoutePlanOption irpo = new IndoorRoutePlanOption().from(startNode).to(endNode);
             mRoutePlanSearch.walkingIndoorSearch(irpo);
-
-
-            mBinding.activityIndoorRlytBottomRouteplan.setVisibility(View.VISIBLE);
         }
     }
-
+    /* 单点选择Poi事件回调 */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(OnePoiMsgEvent event) {
         if(null!=event.getPoiIndoorResult()&&null!=event.getCallBackLocation()){
@@ -467,55 +502,6 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
                 initBottomNavigationigation(mPoiIndoorResult,event.getCallBackLocation());
             }
         }
-    }
-
-    private void initBottomNavigationigation(final PoiIndoorResult mPoiIndoorResult, final BDLocation mCallBackLocation){
-        View view = mBinding.activityIndoorIncludeBottomNavigation.getRootView();
-        TextView name = (TextView)view.findViewById(R.id.adapter_poiitem_tv_placename);
-        TextView floor = (TextView) view.findViewById(R.id.adapter_poiitem_tv_floor);
-        TextView distance = (TextView) view.findViewById(R.id.adapter_poiitem_tv_distance);
-        name.setText(mPoiIndoorResult.getmArrayPoiInfo().get(0).name);
-        floor.setText(mPoiIndoorResult.getmArrayPoiInfo().get(0).floor);
-        String distanceStr = getDistanceText(mCallBackLocation,mPoiIndoorResult.getmArrayPoiInfo().get(0));
-        distance.setText(distanceStr);
-        LinearLayout startNavigation = (LinearLayout)view.findViewById(R.id.adapter_poiitem_llyt_startnavigationlayout);
-        startNavigation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                planRouteInDoor(mCallBackLocation,mPoiIndoorResult.getmArrayPoiInfo().get(0));
-            }
-        });
-        mBinding.activityIndoorRlytBottomNavigation.setVisibility(View.VISIBLE);
-    }
-
-
-
-
-    private String getDistanceText(BDLocation mCallBackLocation,PoiIndoorInfo mPoiIndoorInfo){
-        LatLng currentLatLng = new LatLng(mCallBackLocation.getLatitude(),mCallBackLocation.getLongitude());
-        int distance = mapUtilsHelper.calculateDistance(currentLatLng,mPoiIndoorInfo.latLng);
-        return "离目的地距离"+distance+"米";
-    }
-
-    private void planRouteInDoor(BDLocation mCallBackLocation,PoiIndoorInfo mPoiIndoorInfo){
-        if(null!=mCallBackLocation){
-            LatLng startLatLng = new LatLng(mCallBackLocation.getLatitude(),mCallBackLocation.getLongitude());
-            String startFloor = mCallBackLocation.getFloor();
-            LatLng endLatLng = mPoiIndoorInfo.latLng;
-            String endFloor = mPoiIndoorInfo.floor;
-
-            ResultRoutePlan mResultRoutePlan = new ResultRoutePlan(startLatLng,startFloor,endLatLng,endFloor);
-            EventBus.getDefault().post(new RoutePlanMsgEvent(mResultRoutePlan));
-        }
-    }
-
-    private void initFloorsList(){
-        if(null == mFloorsListAdapter)
-            mFloorsListAdapter = new FloorsListAdapter(InDoorActivity.this,mMapBaseIndoorMapInfo.getFloors());
-        mFloorsList.getFloorsListView().setAdapter(mFloorsListAdapter);
-        mFloorsListAdapter.notifyDataSetInvalidated();
-
-
     }
 
 

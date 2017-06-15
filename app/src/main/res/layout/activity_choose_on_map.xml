@@ -33,7 +33,8 @@
     <RelativeLayout
         android:id="@+id/include_choose_on_map_bottomlayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <include layout="@layout/include_choose_on_map_bottominfo"/>
 

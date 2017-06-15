@@ -36,8 +36,7 @@ public class IndoorRouteOverlay extends OverlayManager {
      */
     public IndoorRouteOverlay(BaiduMap baiduMap) {
         super(baiduMap);
-        colorInfo = new int[]{ Color.argb(178, 0, 128, 255), Color.argb(178, 230, 77, 128), Color.argb(178, 88, 78,
-                255)};
+        colorInfo = new int[]{ Color.argb(178, 0, 128, 255), Color.argb(178, 121, 134, 145), Color.argb(178, 121, 134, 145),Color.argb(178, 121, 134, 145),Color.argb(178, 121, 134, 145)};
     }
 
 

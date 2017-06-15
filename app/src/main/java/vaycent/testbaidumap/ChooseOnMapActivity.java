@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.baidu.mapapi.map.BaiduMap;
@@ -34,6 +35,7 @@ public class ChooseOnMapActivity extends AppCompatActivity {
     private MapBaseIndoorMapInfo mMapBaseIndoorMapInfo = null;
 
     private TextView placeName,placeDistance,placeFloor;
+    private RelativeLayout bottomRlyt;
     private Button btnConfirm;
     private String chooseFloor;
     private MapPoi mMapPoi;
@@ -96,6 +98,7 @@ public class ChooseOnMapActivity extends AppCompatActivity {
         placeDistance=(TextView) findViewById(R.id.include_choose_onmap_tv_distance);
         placeFloor=(TextView) findViewById(R.id.include_choose_onmap_tv_floor);
         btnConfirm=(Button) findViewById(R.id.include_choose_onmap_btn_confirm);
+        bottomRlyt = (RelativeLayout)findViewById(R.id.include_choose_on_map_bottomlayout);
 
         btnConfirm.setOnClickListener(new NoMultiClickListener() {
             @Override
@@ -159,12 +162,16 @@ public class ChooseOnMapActivity extends AppCompatActivity {
             }
             @Override
             public boolean onMapPoiClick(MapPoi mapPoi) {
-                btnConfirm.setVisibility(View.VISIBLE);
+
                 mMapPoi = mapPoi;
                 mMapUtils.drawMarkerWithLatLng(mBaiduMap,mMapPoi.getPosition());
                 placeName.setText(mapPoi.getName());
                 placeDistance.setText(getDistanceText(mMapPoi));
                 placeFloor.setText(chooseFloor);
+                if(bottomRlyt.getVisibility()==View.GONE)
+                    bottomRlyt.setVisibility(View.VISIBLE);
+                if(btnConfirm.getVisibility()==View.GONE)
+                    btnConfirm.setVisibility(View.VISIBLE);
 
                 return false;
             }

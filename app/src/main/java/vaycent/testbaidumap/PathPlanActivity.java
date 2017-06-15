@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.baidu.mapapi.model.LatLng;
@@ -155,18 +154,10 @@ public class PathPlanActivity extends Activity{
     }
 
     private void planRouteInDoor(LatLng startLatLng,String startFloor,LatLng endLatLng,String endFloor){
-        Log.e("Vaycent","startLatLng lat:"+startLatLng.latitude);
-        Log.e("Vaycent","startLatLng lon:"+startLatLng.longitude);
-        Log.e("Vaycent","startLatLng floor:"+startFloor);
-
-        Log.e("Vaycent","endLatLng lat:"+endLatLng.latitude);
-        Log.e("Vaycent","endLatLng lon:"+endLatLng.longitude);
-        Log.e("Vaycent","endLatLng floor:"+endFloor);
-
 
         ResultRoutePlan mResultRoutePlan = new ResultRoutePlan(startLatLng,startFloor,endLatLng,endFloor);
             EventBus.getDefault().post(new RoutePlanMsgEvent(mResultRoutePlan));
-            backToInDoorActivity();
+        backToInDoorActivity();
     }
 
     private void backToInDoorActivity(){
