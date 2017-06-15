@@ -50,6 +50,7 @@ public class PoiInDoorSearchActivity extends AppCompatActivity implements OnGetP
     private Indoor mIndoorData;
     private int requestCode;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,7 +151,7 @@ public class PoiInDoorSearchActivity extends AppCompatActivity implements OnGetP
             @Override
             protected void onNoMultiClick(View v) {
                 Intent chooseOnMapIntent = new Intent();
-                chooseOnMapIntent.setClass(PoiInDoorSearchActivity.this,ChooseOnMap.class);
+                chooseOnMapIntent.setClass(PoiInDoorSearchActivity.this,ChooseOnMapActivity.class);
                 chooseOnMapIntent.putExtra(mIndoorData.KEY_NAME,mIndoorData);
                 chooseOnMapIntent.putExtra("requestCode",requestCode);
                 startActivity(chooseOnMapIntent);

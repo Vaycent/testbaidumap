@@ -40,18 +40,18 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import vaycent.testbaidumap.Adapter.FloorsListAdapter;
 import vaycent.testbaidumap.EventBus.LocationMsgEvent;
 import vaycent.testbaidumap.EventBus.OnePoiMsgEvent;
 import vaycent.testbaidumap.EventBus.RoutePlanMsgEvent;
 import vaycent.testbaidumap.HelperLocation.LocationManager;
-import vaycent.testbaidumap.InDoor.BaseStripAdapter;
-import vaycent.testbaidumap.InDoor.StripListView;
 import vaycent.testbaidumap.Objects.Indoor;
 import vaycent.testbaidumap.Objects.ResultRoutePlan;
 import vaycent.testbaidumap.Utils.AlertUtils;
 import vaycent.testbaidumap.Utils.MapUtils;
 import vaycent.testbaidumap.Utils.NoMultiClickListener;
 import vaycent.testbaidumap.databinding.InDoorActivityBinding;
+import vaycent.testbaidumap.widget.FloorsList;
 
 
 public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanResultListener,OnGetPoiSearchResultListener,
@@ -68,14 +68,14 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
     private int nodeIndex = -1;
     private MapBaseIndoorMapInfo mMapBaseIndoorMapInfo = null;
-    private StripListView stripListView;
-    private BaseStripAdapter mFloorListAdapter;
 
     private int btnResourceCode=0;
 
     private InDoorActivityBinding mBinding;
-
     private Indoor mIndoorData;
+
+    private FloorsList mFloorsList;
+    private FloorsListAdapter mFloorsListAdapter;
 
 
     @Override
@@ -85,8 +85,6 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         EventBus.getDefault().register(this);
 
         initLayout();
-
-        initStripListView();
 
         initMap();
 
@@ -150,7 +148,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             mapUtilsHelper.drawIndoorRoutePlan(mBaiduMap,indoorRouteResult);
             mIndoorRouteline = indoorRouteResult.getRouteLines().get(0);
             nodeIndex = -1;
-            mBinding.activityIndoorLlytPathmsglayout.setVisibility(View.VISIBLE);
+            mBinding.activityIndoorRlytBottomRouteplan.setVisibility(View.VISIBLE);
         }
     }
 
@@ -221,7 +219,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         if (mAlertUtils.getPoiIndoorAlert(poiIndoorResult)) {
             return;
         }else{
-            mapUtilsHelper.drawIndoorOnePoi(mBaiduMap,this,poiIndoorResult);
+            mapUtilsHelper.drawMarkerWithLatLng(mBaiduMap,poiIndoorResult.getmArrayPoiInfo().get(0).latLng);
         }
     }
 
@@ -235,8 +233,7 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 
 
     private void initLayout(){
-        stripListView = new StripListView(this);
-        mBinding.activityIndoorRlytRoot.addView(stripListView);
+
 
         mBinding.activityIndoorLlytSearchlayout.setOnClickListener(new NoMultiClickListener() {
             @Override
@@ -261,34 +258,28 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
                 btnResourceCode = mBinding.activityIndoorBtnCurrentposition.getId();
             }
         });
-        mBinding.activityIndoorBtnPath .setOnClickListener(new NoMultiClickListener() {
+        mBinding.activityIndoorBtnPath.setOnClickListener(new NoMultiClickListener() {
             @Override
             public void onNoMultiClick(View v) {
                 mLocationManager.startLocationSearch();
                 btnResourceCode = mBinding.activityIndoorBtnPath .getId();
             }
         });
-    }
 
-    private void initStripListView(){
-        mFloorListAdapter = new BaseStripAdapter(InDoorActivity.this);
-        stripListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mFloorsList = (FloorsList)findViewById(R.id.activity_indoor_fl_floors);
+        mFloorsList.getFloorsListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 if (mMapBaseIndoorMapInfo == null) {
                     return;
                 }
-                String floor = (String) mFloorListAdapter.getItem(position);
+                mFloorsListAdapter.setSelectedPostion(position);
+                mFloorsListAdapter.notifyDataSetChanged();
+                String floor = (String) mFloorsListAdapter.getItem(position);
                 mBaiduMap.switchBaseIndoorMapFloor(floor, mMapBaseIndoorMapInfo.getID());
-                mFloorListAdapter.setSelectedPostion(position);
-                mFloorListAdapter.notifyDataSetInvalidated();
             }
         });
-//        View headView = LayoutInflater.from(this).inflate(R.layout.adapter_striplistview_headlayout, null);
-//        View footView = LayoutInflater.from(this).inflate(R.layout.adapter_striplistview_footlayout, null);
-//        stripListView.addHeaderView(headView);
-//        stripListView.addFooterView(footView );
     }
 
     private void initMap(){
@@ -309,17 +300,17 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             @Override
             public void onBaseIndoorMapMode(boolean b, MapBaseIndoorMapInfo mapBaseIndoorMapInfo) {
                 if (b == false || mapBaseIndoorMapInfo == null) {
-                    stripListView.setVisibility(View.INVISIBLE);
+                    mFloorsList.setVisibility(View.INVISIBLE);
                     mBinding.activityIndoorBtnNavigationmap.setVisibility(View.INVISIBLE);
                     mBinding.activityIndoorBtnPath.setVisibility(View.INVISIBLE);
                     return;
                 }
-                mFloorListAdapter.setmFloorList( mapBaseIndoorMapInfo.getFloors());
-                stripListView.setVisibility(View.VISIBLE);
+                mFloorsList.setVisibility(View.VISIBLE);
                 mBinding.activityIndoorBtnNavigationmap.setVisibility(View.VISIBLE);
                 mBinding.activityIndoorBtnPath.setVisibility(View.VISIBLE);
-                stripListView.setStripAdapter(mFloorListAdapter);
                 mMapBaseIndoorMapInfo = mapBaseIndoorMapInfo;
+
+                initFloorsList();
             }
         });
 
@@ -359,17 +350,17 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             if (mIndoorRouteline == null || mIndoorRouteline.getAllStep() == null) {
                 return;
             }
-            if (nodeIndex == -1 && v.getId() == R.id.activity_indoor_btn_prepath) {
+            if (nodeIndex == -1 && v.getId() == R.id.activity_indoor_rlyt_prestep) {
                 return;
             }
             // 设置节点索引
-            if (v.getId() == R.id.activity_indoor_btn_nextpath) {
+            if (v.getId() == R.id.activity_indoor_rlyt_nextstep) {
                 if (nodeIndex < mIndoorRouteline.getAllStep().size() - 1) {
                     nodeIndex++;
                 } else {
                     return;
                 }
-            } else if (v.getId() == R.id.activity_indoor_btn_prepath) {
+            } else if (v.getId() == R.id.activity_indoor_rlyt_prestep) {
                 if (nodeIndex > 0) {
                     nodeIndex--;
                 } else {
@@ -393,28 +384,28 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
 //            popupText.setTextColor(0xFF000000);
 //            popupText.setText(step.getFloorId() + ":" + nodeTitle);
 
-            mBinding.activityIndoorTvPathmsg.setText(step.getFloorId() + ":" + nodeTitle);
+            mBinding.activityIndoorBottomTvRouteguide.setText(step.getFloorId() + ":" + nodeTitle);
 //            mBaiduMap.showInfoWindow(new InfoWindow(popupText, nodeLocation, 0));
 
             // 让楼层对应变化
             mBaiduMap.switchBaseIndoorMapFloor(step.getFloorId(), mMapBaseIndoorMapInfo.getID());
 //        mFloorListAdapter.setSelectedPostion();
-            mFloorListAdapter.notifyDataSetInvalidated();
+//            mFloorListAdapter.notifyDataSetInvalidated();
         }else{
             mAlertUtils.notIndoorModeAlert();
         }
 
         //控制显示隐藏
-        if(0==nodeIndex){
-            mBinding.activityIndoorBtnPrepath.setVisibility(View.GONE);
-        }else{
-            mBinding.activityIndoorBtnPrepath.setVisibility(View.VISIBLE);
-        }
-        if(nodeIndex == mIndoorRouteline.getAllStep().size()-1){
-            mBinding.activityIndoorBtnNextpath.setVisibility(View.GONE);
-        }else{
-            mBinding.activityIndoorBtnNextpath.setVisibility(View.VISIBLE);
-        }
+//        if(0==nodeIndex){
+//            mBinding.activityIndoorBtnPrepath.setVisibility(View.GONE);
+//        }else{
+//            mBinding.activityIndoorBtnPrepath.setVisibility(View.VISIBLE);
+//        }
+//        if(nodeIndex == mIndoorRouteline.getAllStep().size()-1){
+//            mBinding.activityIndoorBtnNextpath.setVisibility(View.GONE);
+//        }else{
+//            mBinding.activityIndoorBtnNextpath.setVisibility(View.VISIBLE);
+//        }
     }
 
 
@@ -435,7 +426,9 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             startActivity(navigationIntent);
 
         }else if(btnResourceCode == mBinding.activityIndoorBtnCurrentposition.getId()){
-            mapUtilsHelper.mapMoveTo(mBaiduMap,event.getCallbackLocation().getLatitude(),event.getCallbackLocation().getLongitude());
+            LatLng locationLatLng = new LatLng(event.getCallbackLocation().getLatitude(),event.getCallbackLocation().getLongitude());
+            mapUtilsHelper.drawLocationMarkerWithLatLng(mBaiduMap,locationLatLng);
+//            mapUtilsHelper.mapMoveTo(mBaiduMap,event.getCallbackLocation().getLatitude(),event.getCallbackLocation().getLongitude());
         }else if(btnResourceCode == mBinding.activityIndoorBtnPath.getId()){
             Intent pathIntent = new Intent();
             pathIntent.setClass(InDoorActivity.this,PathPlanActivity.class);
@@ -453,12 +446,14 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(RoutePlanMsgEvent event) {
         if(null!=event.getResultRoutePlan()){
-            mBinding.activityIndoorRlytBottomNavigation.setVisibility(View.GONE);
             ResultRoutePlan mResultRoutePlan = event.getResultRoutePlan();
             IndoorPlanNode startNode = new IndoorPlanNode(mResultRoutePlan.startLatLng, mResultRoutePlan.startFloor);
             IndoorPlanNode endNode = new IndoorPlanNode(mResultRoutePlan.endLatLng,mResultRoutePlan.endFloor);
             IndoorRoutePlanOption irpo = new IndoorRoutePlanOption().from(startNode).to(endNode);
             mRoutePlanSearch.walkingIndoorSearch(irpo);
+
+
+            mBinding.activityIndoorRlytBottomRouteplan.setVisibility(View.VISIBLE);
         }
     }
 
@@ -468,14 +463,13 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             PoiIndoorResult mPoiIndoorResult = event.getPoiIndoorResult();
 
             if(mPoiIndoorResult.error == PoiIndoorResult.ERRORNO.NO_ERROR){
-                mapUtilsHelper.drawIndoorOnePoi(mBaiduMap,this,mPoiIndoorResult);
-
-                initBottomNavigation(mPoiIndoorResult,event.getCallBackLocation());
+                mapUtilsHelper.drawMarkerWithLatLng(mBaiduMap,mPoiIndoorResult.getmArrayPoiInfo().get(0).latLng);
+                initBottomNavigationigation(mPoiIndoorResult,event.getCallBackLocation());
             }
         }
     }
 
-    private void initBottomNavigation(final PoiIndoorResult mPoiIndoorResult, final BDLocation mCallBackLocation){
+    private void initBottomNavigationigation(final PoiIndoorResult mPoiIndoorResult, final BDLocation mCallBackLocation){
         View view = mBinding.activityIndoorIncludeBottomNavigation.getRootView();
         TextView name = (TextView)view.findViewById(R.id.adapter_poiitem_tv_placename);
         TextView floor = (TextView) view.findViewById(R.id.adapter_poiitem_tv_floor);
@@ -494,6 +488,9 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
         mBinding.activityIndoorRlytBottomNavigation.setVisibility(View.VISIBLE);
     }
 
+
+
+
     private String getDistanceText(BDLocation mCallBackLocation,PoiIndoorInfo mPoiIndoorInfo){
         LatLng currentLatLng = new LatLng(mCallBackLocation.getLatitude(),mCallBackLocation.getLongitude());
         int distance = mapUtilsHelper.calculateDistance(currentLatLng,mPoiIndoorInfo.latLng);
@@ -510,6 +507,15 @@ public class InDoorActivity extends AppCompatActivity implements OnGetRoutePlanR
             ResultRoutePlan mResultRoutePlan = new ResultRoutePlan(startLatLng,startFloor,endLatLng,endFloor);
             EventBus.getDefault().post(new RoutePlanMsgEvent(mResultRoutePlan));
         }
+    }
+
+    private void initFloorsList(){
+        if(null == mFloorsListAdapter)
+            mFloorsListAdapter = new FloorsListAdapter(InDoorActivity.this,mMapBaseIndoorMapInfo.getFloors());
+        mFloorsList.getFloorsListView().setAdapter(mFloorsListAdapter);
+        mFloorsListAdapter.notifyDataSetInvalidated();
+
+
     }
 
 

@@ -71,6 +71,14 @@ public class BaseStripAdapter extends BaseAdapter {
             holder = (NoteViewHolder) convertView.getTag();
         }
 
+
+
+//        convertView = new StripItem(mContext);
+//        holder = new NoteViewHolder();
+//        holder.mFloorTextTV = ((StripItem) convertView).getmText();
+//        convertView.setTag(holder);
+
+
         String floor = mFloorList.get(position);
         if (floor != null) {
             holder.mFloorTextTV.setText(floor);
@@ -84,7 +92,8 @@ public class BaseStripAdapter extends BaseAdapter {
     }
 
     private void refreshViewStyle(TextView view, boolean isSelected) {
-                    view.setTextColor(Color.BLACK);
+
+        view.setTextColor(Color.BLACK);
 
         if (isSelected) {
             view.setBackgroundColor(StripItem.colorSelected);

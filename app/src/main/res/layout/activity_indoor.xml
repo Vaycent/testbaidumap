@@ -2,7 +2,6 @@
 
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:my="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="vaycent.testbaidumap.InDoorActivity">
 
@@ -26,14 +25,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
-
+            <!--地图-->
             <com.baidu.mapapi.map.MapView
                 android:id="@+id/activity_main_mv_map"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clickable="true"/>
-
-
+            <!--页面控件布局-->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -42,13 +40,13 @@
                 <LinearLayout
                     android:id="@+id/activity_indoor_llyt_searchlayout"
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_height="45dp"
                     android:layout_marginLeft="17dp"
                     android:layout_marginRight="17dp"
-                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/button_grey_radius_stroke"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="15dp"
@@ -58,14 +56,23 @@
                         android:background="@drawable/ic_indoor_search"/>
 
                     <TextView
-                        android:gravity="center_vertical"
                         android:layout_width="0dp"
-                        android:layout_height="35dp"
+                        android:layout_height="45dp"
                         android:layout_weight="1"
                         android:background="@null"
+                        android:gravity="center_vertical"
                         android:hint="支持在室内搜索"
                         android:padding="5dp"/>
                 </LinearLayout>
+
+
+                <vaycent.testbaidumap.widget.FloorsList
+                    android:id="@+id/activity_indoor_fl_floors"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="25dp"
+                    android:layout_marginLeft="17dp"
+                    android:layout_above="@+id/activity_indoor_btn_navigationmap"/>
 
 
                 <Button
@@ -73,8 +80,8 @@
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_above="@+id/activity_indoor_btn_currentposition"
-                    android:layout_marginLeft="17dp"
                     android:layout_marginBottom="11dp"
+                    android:layout_marginLeft="17dp"
                     android:background="@drawable/btn_indoor_navigation"
                     android:visibility="invisible"/>
 
@@ -82,63 +89,27 @@
                     android:id="@+id/activity_indoor_btn_currentposition"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:layout_marginLeft="17dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="17dp"
                     android:background="@drawable/btn_indoor_getlocation"/>
-
 
                 <Button
                     android:id="@+id/activity_indoor_btn_path"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="50dp"
                     android:layout_marginRight="17dp"
                     android:background="@drawable/btn_indoor_pathplan"
-                    android:visibility="invisible"
-                    android:layout_marginBottom="50dp"/>
+                    android:visibility="invisible"/>
 
-
-                <LinearLayout
-                    android:id="@+id/activity_indoor_llyt_pathmsglayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignWithParentIfMissing="false"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="false"
-                    android:orientation="horizontal"
-                    android:visibility="invisible">
-
-                    <Button
-                        android:id="@+id/activity_indoor_btn_prepath"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/btn_indoor_leftstep"
-                        android:onClick="nodeClick"/>
-
-                    <TextView
-                        android:id="@+id/activity_indoor_tv_pathmsg"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="#FFFFFF"
-                        android:gravity="center"/>
-
-                    <Button
-                        android:id="@+id/activity_indoor_btn_nextpath"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/btn_indoor_rightstep"
-                        android:onClick="nodeClick"/>
-                </LinearLayout>
 
             </RelativeLayout>
-
         </RelativeLayout>
 
-
+        <!--底部导览项-->
         <RelativeLayout
             android:id="@+id/activity_indoor_rlyt_bottom_navigation"
             android:layout_width="match_parent"
@@ -147,10 +118,82 @@
             android:paddingLeft="17dp"
             android:paddingRight="17dp"
             android:visibility="gone">
+
             <include
                 android:id="@+id/activity_indoor_include_bottom_navigation"
                 layout="@layout/adapter_poiitem"/>
 
+        </RelativeLayout>
+
+        <!--底部路线控制-->
+        <RelativeLayout
+            android:id="@+id/activity_indoor_rlyt_bottom_routeplan"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:background="@color/WHITE"
+            android:gravity="center_vertical"
+            android:paddingLeft="17dp"
+            android:paddingRight="17dp"
+            android:visibility="gone">
+            <!--上一步-->
+            <RelativeLayout
+                android:id="@+id/activity_indoor_rlyt_prestep"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:gravity="center_vertical"
+                android:onClick="nodeClick"
+                android:paddingLeft="17dp"
+                android:paddingRight="10dp">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="18dp"
+                    android:background="@drawable/btn_indoor_leftstep"/>
+
+            </RelativeLayout>
+            <!--下一步-->
+            <RelativeLayout
+                android:id="@+id/activity_indoor_rlyt_nextstep"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:onClick="nodeClick"
+                android:paddingLeft="10dp"
+                android:paddingRight="17dp">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="18dp"
+                    android:background="@drawable/btn_indoor_rightstep"/>
+
+            </RelativeLayout>
+            <!--路线信息-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/ic_indoor_footstep"/>
+
+                <TextView
+                    android:id="@+id/activity_indoor_bottom_tv_routeguide"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/MAIN_TEXT_COLOR"
+                    android:textSize="15dp"/>
+
+
+            </LinearLayout>
         </RelativeLayout>
 
     </LinearLayout>

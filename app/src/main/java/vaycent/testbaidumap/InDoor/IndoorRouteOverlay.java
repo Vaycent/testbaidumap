@@ -89,15 +89,15 @@ public class IndoorRouteOverlay extends OverlayManager {
                 if (step.getEntrace() != null) {
                     overlayList.add((new MarkerOptions()).position(step.getEntrace().getLocation())
                             .zIndex(10).anchor(0.5f, 0.5f).extraInfo(b)
-                            .icon(BitmapDescriptorFactory.fromAssetWithDpi("Icon_walk_route.png")));
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_indoor_step)));
                 }
 
                 // 最后路段绘制出口点
                 if (mRouteLine.getAllStep().indexOf(step) == (mRouteLine.getAllStep().size() - 1)
                         && step.getExit() != null) {
                     overlayList.add((new MarkerOptions()).position(step.getExit().getLocation()).anchor(0.5f, 0.5f)
-                            .zIndex(10).icon(BitmapDescriptorFactory.fromAssetWithDpi("Icon_walk_route.png")));
-
+                            .zIndex(10).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_indoor_step)));
+//                    BitmapDescriptorFactory.fromAssetWithDpi("Icon_walk_route.png")
                 }
             }
         }
@@ -118,6 +118,9 @@ public class IndoorRouteOverlay extends OverlayManager {
                     .zIndex(10));
             //BitmapDescriptorFactory.fromAssetWithDpi("Icon_end.png")
         }
+
+
+
 
         // 添加线poly line list
         if (mRouteLine.getAllStep() != null && mRouteLine.getAllStep().size() > 0) {

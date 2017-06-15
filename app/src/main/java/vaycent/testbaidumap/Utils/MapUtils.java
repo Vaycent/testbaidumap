@@ -21,8 +21,6 @@ import com.baidu.mapapi.search.route.IndoorRouteResult;
 import com.baidu.mapapi.utils.DistanceUtil;
 
 import vaycent.testbaidumap.InDoor.IndoorRouteOverlay;
-import vaycent.testbaidumap.Poi.CanClickPoiOverlay;
-import vaycent.testbaidumap.Poi.IndoorPoiOverlay;
 import vaycent.testbaidumap.Poi.MultiPoiMapOverlay;
 import vaycent.testbaidumap.R;
 
@@ -31,7 +29,10 @@ import vaycent.testbaidumap.R;
  */
 
 public class MapUtils {
-//  控制镜头移动
+
+    private Marker currentLocationMarker;
+
+    //  控制镜头移动
     public void mapMoveTo(BaiduMap mBaiduMap,double lat, double lon){
         //控制地图镜头开始位置
         LatLng centerpos = new LatLng(lat,lon);
@@ -39,12 +40,12 @@ public class MapUtils {
         builder.target(centerpos).zoom(19.0f);
         mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
     }
-//  计算两点间距离
+    //  计算两点间距离
     public int calculateDistance(LatLng currentLatLng,LatLng targetLatLng){
         int distance = (int)(DistanceUtil.getDistance(currentLatLng, targetLatLng));
         return distance;
     }
-//  控制是否显示百度log
+    //  控制是否显示百度log
     public void isShowBaiDuLogo(MapView mapView,boolean isShow){
         View child = mapView.getChildAt(1);
         if (child != null && (child instanceof ImageView || child instanceof ZoomControls)) {
@@ -57,6 +58,10 @@ public class MapUtils {
     //  控制是否显示地图比例尺
     public void isShowMapScale(MapView mapView,boolean isShow){
         mapView.showScaleControl(isShow);
+    }
+    //  控制是否显示放大缩小控件
+    public void isShowZoomWidget(MapView mapView,boolean isShow){
+        mapView.showZoomControls(isShow);
     }
     //  设置放大缩小控件位置
     public void setZoomWidgetPosition(MapView mapView,int left, int top, int right, int bottom){
@@ -79,14 +84,16 @@ public class MapUtils {
 
     }
     //  室内单个Poi画图到IndoorActivity
-    public void drawIndoorOnePoi(BaiduMap mBaiduMap,Context mContext, PoiIndoorResult poiIndoorResult){
-        mBaiduMap.clear();
-        IndoorPoiOverlay overlay = new CanClickPoiOverlay(mBaiduMap,mContext);
-        mBaiduMap.setOnMarkerClickListener(overlay);
-        overlay.setData(poiIndoorResult);
-        overlay.addToMap();
-        overlay.zoomToSpan();
-    }
+//    public void drawIndoorOnePoi(BaiduMap mBaiduMap,Context mContext, PoiIndoorResult poiIndoorResult){
+//        mBaiduMap.clear();
+//        IndoorPoiOverlay overlay = new CanClickPoiOverlay(mBaiduMap,mContext);
+//        mBaiduMap.setOnMarkerClickListener(overlay);
+//        overlay.setData(poiIndoorResult);
+//        overlay.addToMap();
+//        overlay.zoomToSpan();
+//
+//        poiIndoorResult.getmArrayPoiInfo().get(0).latLng
+//    }
     //  室内多个Poi画图到MultiPoiMapActivity
     public void drawIndoorMultiPoi(BaiduMap mBaiduMap, Context context, PoiIndoorResult poiIndoorResult, BDLocation resultCallBackLocation, int requestCode){
         mBaiduMap.clear();
@@ -105,5 +112,19 @@ public class MapUtils {
                 .position(mLatLng)
                 .icon(bitmapBD);
         Marker onePoiMarker = (Marker) mBaiduMap.addOverlay(optionOnePoi);
+    }
+    //  根据坐标画图位置大头针到指定位置
+    public void drawLocationMarkerWithLatLng(BaiduMap mBaiduMap,LatLng locationLatLng){
+        if(null==currentLocationMarker){
+            BitmapDescriptor btLocation= BitmapDescriptorFactory
+                    .fromResource(R.drawable.ic_indoor_current_location);
+            OverlayOptions optionCurrentLocation = new MarkerOptions()
+                    .position(locationLatLng)
+                    .icon(btLocation);
+            currentLocationMarker = (Marker) mBaiduMap.addOverlay(optionCurrentLocation);
+        } else{
+            currentLocationMarker.setPosition(locationLatLng);
+
+        }
     }
 }

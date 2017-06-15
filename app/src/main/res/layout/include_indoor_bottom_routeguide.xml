@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/include_indoor_bottom_prestep"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="17dp"
+            android:paddingRight="10dp">
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="18dp"
+
+                android:background="@drawable/btn_indoor_leftstep"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/include_indoor_bottom_nextstep"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="17dp">
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="18dp"
+
+                android:background="@drawable/btn_indoor_rightstep"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/ic_indoor_footstep"/>
+
+            <TextView
+                android:id="@+id/include_indoor_bottom_tv_routeguide"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/MAIN_TEXT_COLOR"
+                android:gravity="center"/>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</layout>
