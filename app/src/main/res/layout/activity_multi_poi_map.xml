@@ -51,6 +51,7 @@
                     android:id="@+id/activity_multi_poi_map_rg_floors_tab"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
+                    android:gravity="center"
                     android:orientation="horizontal"/>
             </LinearLayout>
         </HorizontalScrollView>

@@ -72,7 +72,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="25dp"
                     android:layout_marginLeft="17dp"
-                    android:layout_above="@+id/activity_indoor_btn_navigationmap"/>
+                    android:layout_above="@+id/activity_indoor_btn_navigationmap"
+                    android:visibility="invisible"/>
 
 
                 <Button

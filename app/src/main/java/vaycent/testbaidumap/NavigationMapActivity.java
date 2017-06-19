@@ -190,7 +190,7 @@ public class NavigationMapActivity extends AppCompatActivity implements OnGetPoi
             radioButton.setTextSize(12);
             radioButton.setButtonDrawable(android.R.color.transparent);//隐藏单选圆形按钮
             radioButton.setGravity(Gravity.CENTER);
-//            radioButton.setTextColor(getColor(R.color.tc_indoor_floors_item));
+            radioButton.setTextColor(getResources().getColorStateList(R.color.tc_indoor_floors_item));
             radioButton.setBackgroundResource(R.drawable.bg_indoor_floors_selector);//设置按钮选中/未选中的背景
             mBinding.activityNavigationmapRgFloorsTab.addView(radioButton);//将单选按钮添加到RadioGroup中
             if(radioButton.getText().equals("全部")){

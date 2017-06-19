@@ -91,16 +91,15 @@ public class MultiPoiMapActivity extends AppCompatActivity implements OnGetPoiSe
         ArrayList<String> floors = mFormatUtils.floorsFormat(mIndoorData.getFloorsList());
         for(String floor : floors){
             RadioButton radioButton = new RadioButton(this);
-            RadioGroup.LayoutParams layoutParams = new RadioGroup.LayoutParams(MapUtils.dip2px(this,50), MapUtils.dip2px(this,30));
+            RadioGroup.LayoutParams layoutParams = new RadioGroup.LayoutParams(MapUtils.dip2px(this,48), MapUtils.dip2px(this,16));
             layoutParams.setMargins(MapUtils.dip2px(this,10), MapUtils.dip2px(this,10), MapUtils.dip2px(this,10), MapUtils.dip2px(this,10));
             radioButton.setLayoutParams(layoutParams);
             radioButton.setText(floor);
-//            radioButton.setTextSize(12);
+            radioButton.setTextSize(12);
             radioButton.setButtonDrawable(android.R.color.transparent);//隐藏单选圆形按钮
             radioButton.setGravity(Gravity.CENTER);
-//            radioButton.setTextColor(getResources().getColor(R.color.MAIN));
-//            radioButton.setPadding(10, 10, 10, 10);
-            radioButton.setBackgroundResource(R.drawable.btn_cir_selector);//设置按钮选中/未选中的背景
+            radioButton.setTextColor(getResources().getColorStateList(R.color.tc_indoor_floors_item));
+            radioButton.setBackgroundResource(R.drawable.bg_indoor_floors_selector);//设置按钮选中/未选中的背景
             mBinding.activityMultiPoiMapRgFloorsTab.addView(radioButton);//将单选按钮添加到RadioGroup中
             if(radioButton.getText().equals("全部")){
                 radioButton.setChecked(true);
