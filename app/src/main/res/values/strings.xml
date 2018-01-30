@@ -1,6 +1,7 @@
-<resources>
+<resources
+    tools:ignore="MissingTranslation" xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">testbaidumap</string>
     <string name="title_activity_navigation_map">NavigationMapActivity</string>
 
-    <string name="SW0001">测试</string>
+    <string name="SW0001">test</string>
 </resources>
